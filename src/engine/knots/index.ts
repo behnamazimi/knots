@@ -1,5 +1,6 @@
 import { bowline } from "./bowline";
 import { cloveHitch } from "./clove-hitch";
+import { daisyChain } from "./daisy-chain";
 import { figureEight } from "./figure-eight";
 import { overhand } from "./overhand";
 import { poachersKnot } from "./poachers-knot";
@@ -18,4 +19,5 @@ export const knots: KnotDef[] = [
   zeppelin,
   squareKnot,
   poachersKnot,
+  daisyChain,
 ];

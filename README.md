@@ -20,6 +20,9 @@ See how knots are tied, step by step, with a physically simulated rope.
   <tr>
     <td align="center"><a href="https://knots-made-easy.pages.dev/knots/square-knot/"><img src="public/og/square-knot.jpg" width="260" alt="Square knot"><br>Square knot</a></td>
     <td align="center"><a href="https://knots-made-easy.pages.dev/knots/poachers-knot/"><img src="public/og/poachers-knot.jpg" width="260" alt="Poacher's knot"><br>Poacher's knot</a></td>
+    <td align="center"><a href="https://knots-made-easy.pages.dev/knots/daisy-chain/"><img src="public/og/daisy-chain.jpg" width="260" alt="Daisy chain"><br>Daisy chain</a></td>
+  </tr>
+  <tr>
     <td align="center">🪢<br><b>More knots are being tied</b><br>Star the repo to see them first</td>
   </tr>
 </table>
