@@ -83,6 +83,10 @@ export function createStage(canvas: HTMLCanvasElement) {
   const viewListeners = new Set<() => void>();
   const notifyView = () => viewListeners.forEach((l) => l());
   controls.addEventListener("change", notifyView);
+  // The pointer handlers move the camera through update() themselves, so the loop's own
+  // update() can return false after a drag step; the change event catches those.
+  let viewMoved = false;
+  controls.addEventListener("change", () => (viewMoved = true));
   const isDefaultView = () =>
     camera.position.distanceTo(controls.position0) < 1e-3 &&
     controls.target.distanceTo(controls.target0) < 1e-3;
@@ -90,7 +94,7 @@ export function createStage(canvas: HTMLCanvasElement) {
   // A reset eases from where the view is to the default over RESET_TIME.
   let reset: { from: THREE.Vector3; target: THREE.Vector3; start: number } | null = null;
   const stepReset = (now: number) => {
-    if (!reset) return;
+    if (!reset) return false;
     const u = Math.min((now - reset.start) / RESET_TIME, 1);
     const e = u * u * (3 - 2 * u);
     camera.position.lerpVectors(reset.from, controls.position0, e);
@@ -100,9 +104,13 @@ export function createStage(canvas: HTMLCanvasElement) {
       controls.reset(); // lands exactly and drops any leftover drag momentum
     }
     notifyView();
+    return true;
   };
 
+  // Resizing clears the canvas, so the next frame has to draw.
+  let resized = true;
   const resize = () => {
+    resized = true;
     const { clientWidth: w, clientHeight: h } = canvas;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
@@ -113,16 +121,26 @@ export function createStage(canvas: HTMLCanvasElement) {
   const observer = new ResizeObserver(resize);
   observer.observe(canvas);
   resize();
+  // A restored context starts blank; a paused knot would otherwise stay that way.
+  const restored = () => (resized = true);
+  canvas.addEventListener("webglcontextrestored", restored);
 
   return {
     renderer,
     scene,
     camera,
     controls,
-    render(now: number) {
-      stepReset(now);
-      controls.update();
+    /**
+     * Draws a frame if the scene changed or the view moved, eased or resized; returns whether it drew.
+     * Leave `sceneChanged` out to draw every frame.
+     */
+    render(now: number, sceneChanged = true) {
+      const easing = stepReset(now);
+      const moved = controls.update(); // also carries damping drift after a drag
+      if (!sceneChanged && !easing && !moved && !viewMoved && !resized) return false;
+      viewMoved = resized = false;
       renderer.render(scene, camera);
+      return true;
     },
     /** Eases the camera back to the default view; jumps when motion is reduced. */
     resetView(now: number, instant = false) {
@@ -144,6 +162,7 @@ export function createStage(canvas: HTMLCanvasElement) {
     },
     dispose() {
       observer.disconnect();
+      canvas.removeEventListener("webglcontextrestored", restored);
       controls.dispose();
       table.geometry.dispose();
       table.material.dispose();
