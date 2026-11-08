@@ -34,7 +34,11 @@ for (const id of ids.filter((id) => !only || id === only)) {
   // Jump to the end; playback stops there, so the finished knot stays put.
   await page.focus("input[aria-label=Timeline]");
   await page.keyboard.press("End");
-  await page.addStyleTag({ content: "body > :not(canvas) { visibility: hidden !important; }" });
+  // The canvas sits inside the page's layout, so hide everything else and show the canvas again.
+  await page.addStyleTag({
+    content:
+      "body * { visibility: hidden !important; } canvas { visibility: visible !important; }",
+  });
   await page.setViewportSize(BIG);
   await page.waitForTimeout(2000);
   // Centre the crop on the knot: the column and the row with the most rope in them.
