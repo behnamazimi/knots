@@ -35,7 +35,8 @@ test.describe("without JavaScript", () => {
     await expect(page.getByLabel("Playback")).toContainText("1/7");
     await expect(page.getByRole("button", { name: /^Step 7:/ })).toBeAttached();
     await expect(page.locator('img[src="/og/zeppelin.jpg"]').first()).toBeVisible();
-    await expect(page.locator("dialog a")).toHaveCount(5);
+    // At least the first few knots; an exact count would break every time a knot is added.
+    await expect.poll(() => page.locator("dialog a").count()).toBeGreaterThan(4);
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       "content",
       /\/og\/zeppelin\.jpg$/,
