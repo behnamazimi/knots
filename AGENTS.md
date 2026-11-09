@@ -37,6 +37,14 @@ Run `pnpm test` after anything in `engine/`. Look at UI and rendering changes in
 
 All of tests, typecheck, oxlint and oxfmt must pass before committing.
 
+## Commits and PRs
+
+- All changes go through a pull request into `main`; never push to `main` directly. Work on a branch, open a PR, and let CI pass (it runs the same checks plus a build) before merge. Don't commit or push unless the user asked you to.
+- Subject: one imperative sentence in plain English, capitalised, no period, no `feat:`/`fix:` prefix, ideally under 72 characters ("Halve the cost of rebuilding the rope mesh"). The PR number `(#14)` is added by the squash merge; don't write it yourself.
+- Body (optional): why, not what. Say so when a bake fingerprint hash changed on purpose, and give before/after numbers for performance changes.
+- One subject per commit and per PR. Don't mix a refactor with a new knot or a physics change.
+- Never hand-edit the "Tie the latest stargazer knots" commits' output (`.github/stargazer-rope-*.svg`); a workflow produces them.
+
 ## Architecture
 
 ```
