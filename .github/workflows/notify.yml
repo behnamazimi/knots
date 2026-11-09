@@ -1,0 +1,69 @@
+# Tells the DevOps Telegram chat how main and production are doing: every failure, every deploy,
+# and CI turning green again. Pull request runs are left out: the author already sees them.
+# Needs repository secrets TELEGRAM_OPS_BOT_TOKEN and TELEGRAM_OPS_CHAT_ID (the same bot as lobyas).
+name: Notify
+
+on:
+  workflow_run:
+    workflows: [CI, Deploy]
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  telegram:
+    runs-on: ubuntu-latest
+    if: >-
+      (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure')
+      && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main'
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the message
+        id: message
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          WORKFLOW: ${{ github.event.workflow_run.name }}
+          WORKFLOW_ID: ${{ github.event.workflow_run.workflow_id }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          RUN_CREATED_AT: ${{ github.event.workflow_run.created_at }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+          COMMIT_TITLE: ${{ github.event.workflow_run.head_commit.message }}
+        run: |
+          title="$(printf '%s' "$COMMIT_TITLE" | head -n 1)"
+          detail="${WORKFLOW} · ${SHA:0:7} ${title}"
+
+          if [ "$CONCLUSION" = "failure" ]; then
+            failed="$(gh run view "$RUN_ID" --repo "$GITHUB_REPOSITORY" --json jobs \
+              --jq '[.jobs[] | select(.conclusion == "failure") | .name] | join(", ")')"
+            text="❌ ${WORKFLOW} failed${failed:+ (${failed})}"$'\n'"${detail}"$'\n'"${RUN_URL}"
+          elif [ "$WORKFLOW" = "Deploy" ]; then
+            text="🚀 Production deployed"$'\n'"${detail}"$'\n'"${RUN_URL}"
+          else
+            # CI passed: only worth a message if the run before it on main failed.
+            previous="$(gh run list --repo "$GITHUB_REPOSITORY" --workflow "$WORKFLOW_ID" \
+              --branch main --event push --status completed --limit 5 \
+              --json conclusion,createdAt \
+              --jq "[.[] | select(.createdAt < \"${RUN_CREATED_AT}\")][0].conclusion // \"\"")"
+            if [ "$previous" = "failure" ]; then
+              text="✅ ${WORKFLOW} is green again on main"$'\n'"${detail}"$'\n'"${RUN_URL}"
+            else
+              text=""
+            fi
+          fi
+
+          {
+            echo "text<<EOF_MESSAGE"
+            echo "$text"
+            echo "EOF_MESSAGE"
+          } >> "$GITHUB_OUTPUT"
+      - name: Send to Telegram
+        if: steps.message.outputs.text != ''
+        env:
+          TELEGRAM_OPS_BOT_TOKEN: ${{ secrets.TELEGRAM_OPS_BOT_TOKEN }}
+          TELEGRAM_OPS_CHAT_ID: ${{ secrets.TELEGRAM_OPS_CHAT_ID }}
+          MESSAGE: ${{ steps.message.outputs.text }}
+        run: scripts/notify-telegram.sh
