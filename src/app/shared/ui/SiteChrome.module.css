@@ -1,7 +1,7 @@
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   max-width: 1200px;
   margin: 0 auto;
   padding-block: 22px;
@@ -15,6 +15,7 @@
 
 .nav {
   display: flex;
+  align-items: center;
   gap: 22px;
   color: var(--muted);
 }
@@ -52,4 +53,8 @@
 
 .u:hover {
   text-decoration-color: var(--accent);
+}
+
+.gap {
+  margin-inline: 6px;
 }

@@ -1,0 +1,51 @@
+.toggle {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  overflow: hidden; /* the horizon: icons slide out of sight beneath it */
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: none;
+  color: var(--ink);
+  transition: border-color 150ms;
+}
+
+.toggle:hover {
+  border-color: var(--accent);
+}
+
+.sun,
+.moon {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  transition:
+    transform 1100ms cubic-bezier(0.34, 1.2, 0.64, 1),
+    opacity 700ms;
+}
+
+.sun {
+  color: #e0a21b;
+}
+
+.moon {
+  transform: translateY(150%) rotate(-60deg);
+  opacity: 0;
+}
+
+:global(html[data-theme="dark"]) .sun {
+  transform: translateY(150%) rotate(90deg);
+  opacity: 0;
+}
+
+:global(html[data-theme="dark"]) .moon {
+  transform: none;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sun,
+  .moon {
+    transition: none;
+  }
+}
