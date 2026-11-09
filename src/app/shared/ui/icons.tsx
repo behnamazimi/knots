@@ -60,3 +60,8 @@ export const EyeIcon = icon(
 export const EyeOffIcon = icon(
   "M3 12s3.5-6.5 9-6.5c1.4 0 2.7.4 3.8 1M21 12s-3.5 6.5-9 6.5c-1.4 0-2.7-.4-3.8-1M4 4l16 16M10 10a2.5 2.5 0 0 0 3.5 3.5",
 );
+export const ChevronLeftIcon = icon("M15 5l-7 7 7 7");
+export const ArrowRightIcon = icon("M5 12h14M13 6l6 6-6 6");
+export const InfoIcon = icon("M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 11v5M12 8h.01");
+export const ListIcon = icon("M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01");
+export const WarningIcon = icon("M12 4L3 20h18zM12 10v4M12 17h.01");

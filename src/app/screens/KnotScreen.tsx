@@ -7,6 +7,14 @@ import { Player } from "../../engine/playback/player";
 import { physicsFromParams } from "../features/tuner";
 import { KNOT_INFO } from "../shared/knotInfo";
 import { REPO_URL, knotPath } from "../shared/site";
+import {
+  ArrowRightIcon,
+  CheckIcon,
+  ChevronLeftIcon,
+  InfoIcon,
+  ListIcon,
+  WarningIcon,
+} from "../shared/ui/icons";
 import { SiteFooter, SiteHeader, linkClass } from "../shared/ui/SiteChrome";
 import { KnotStage } from "./KnotStage";
 import styles from "./KnotScreen.module.css";
@@ -44,7 +52,8 @@ function Session({
         <div className={`${styles.cols} ${wide ? styles.wideCols : ""}`}>
           <article className={styles.article}>
             <Link className={styles.back} to="/">
-              ← All knots
+              <ChevronLeftIcon />
+              All knots
             </Link>
             <h1 className={styles.title}>{knot.name}</h1>
             <p className={styles.lead}>{knot.summary}</p>
@@ -62,7 +71,10 @@ function Session({
               ))}
             </dl>
             <section className={styles.section}>
-              <h2>What it’s for</h2>
+              <h2>
+                <CheckIcon />
+                What it’s for
+              </h2>
               <ul className={`${styles.list} ${styles.uses}`}>
                 {info.uses.map((u) => (
                   <li key={u}>{u}</li>
@@ -70,15 +82,24 @@ function Session({
               </ul>
             </section>
             <section className={styles.section}>
-              <h2>Good to know</h2>
+              <h2>
+                <InfoIcon />
+                Good to know
+              </h2>
               <p>{info.watch}</p>
             </section>
             <section className={styles.section}>
-              <h2>How to tie it</h2>
+              <h2>
+                <ListIcon />
+                How to tie it
+              </h2>
               <StepList knot={knot} player={player} />
             </section>
             <section className={styles.section}>
-              <h2>Related knots</h2>
+              <h2>
+                <ArrowRightIcon />
+                Related knots
+              </h2>
               <div className={styles.related}>
                 {info.related.map((id) => (
                   <Link key={id} className={linkClass} to={knotPath(id)}>
@@ -88,7 +109,10 @@ function Session({
               </div>
             </section>
             <section className={styles.section}>
-              <h2>Before you rely on it</h2>
+              <h2>
+                <WarningIcon />
+                Before you rely on it
+              </h2>
               <p>
                 The rope here is simulated. Real rope differs in stiffness, friction and size, so
                 practise with real rope and check the result by hand. Do not rely on a knot learned

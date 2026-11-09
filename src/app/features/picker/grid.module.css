@@ -50,7 +50,9 @@
   border-radius: var(--radius);
   overflow: hidden;
   background: var(--stage);
-  box-shadow: inset 0 0 0 1px rgb(35 32 28 / 0.08);
+  box-shadow:
+    inset 0 0 0 1px rgb(35 32 28 / 0.08),
+    0 10px 28px -14px rgb(35 32 28 / 0.18);
 }
 
 .card:focus-visible .img {

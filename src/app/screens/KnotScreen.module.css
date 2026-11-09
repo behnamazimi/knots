@@ -34,7 +34,9 @@
 }
 
 .back {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   margin-bottom: 18px;
   font-size: 14px;
   color: var(--muted);
@@ -87,10 +89,17 @@
 }
 
 .section h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin: 0 0 10px;
   font-size: 1.1rem;
   font-weight: 600;
   letter-spacing: -0.01em;
+}
+
+.section h2 :global(.icon) {
+  color: var(--muted);
 }
 
 .section p {
@@ -175,7 +184,9 @@
     z-index: 2;
     height: 44vh;
     min-height: 300px;
-    box-shadow: 0 0 0 16px var(--paper);
+    box-shadow:
+      0 0 0 16px var(--paper),
+      var(--shadow-soft);
   }
 }
 
