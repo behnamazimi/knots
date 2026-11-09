@@ -8,7 +8,8 @@ export const NATURAL_ROPE = "#c39f6a";
 
 /**
  * Draws a knot session on a canvas: owns the three.js stage and the render loop, ticks the
- * session's player and redraws its ropes every frame. Show another session to switch knots.
+ * session's player and redraws only when the rope or the view changed. Show another session to
+ * switch knots.
  */
 export class KnotViewer {
   private readonly stage: Stage;
@@ -18,6 +19,8 @@ export class KnotViewer {
   private ropes: RopeMesh[] = [];
   private props: THREE.Mesh[] = [];
   private firstDraw: (() => void) | null = null;
+  /** Time of the frame the ropes show; NaN until the session's first frame is built. */
+  private shownTime = NaN;
 
   constructor(canvas: HTMLCanvasElement) {
     this.stage = createStage(canvas);
@@ -62,18 +65,27 @@ export class KnotViewer {
   private frame(now: number) {
     this.clock.update(now);
     const session = this.session;
+    let changed = false;
     if (session) {
       session.player.tick(this.clock.getDelta());
-      const { positions, normals } = session.timeline.sample(session.player.getSnapshot().time);
-      let o = 0;
-      this.ropes.forEach((rope, k) => {
-        const end = o + session.timeline.counts[k] * 3;
-        rope.update(positions.subarray(o, end), normals.subarray(o, end));
-        o = end;
-      });
+      const { timeline } = session;
+      // Clamped as sample() clamps it: while playback waits at the bake edge, the drawn frame
+      // still moves as the edge does. Baked frames never change, so the same time is the same rope.
+      const time = Math.min(Math.max(session.player.getSnapshot().time, 0), timeline.ready);
+      if (time !== this.shownTime) {
+        this.shownTime = time;
+        changed = true;
+        const { positions, normals } = timeline.sample(time);
+        let o = 0;
+        this.ropes.forEach((rope, k) => {
+          const end = o + timeline.counts[k] * 3;
+          rope.update(positions.subarray(o, end), normals.subarray(o, end));
+          o = end;
+        });
+      }
     }
-    this.stage.render(now);
-    if (session && this.firstDraw) {
+    const drawn = this.stage.render(now, changed);
+    if (session && drawn && this.firstDraw) {
       this.firstDraw();
       this.firstDraw = null;
     }
@@ -93,5 +105,6 @@ export class KnotViewer {
     this.ropes = [];
     this.props = [];
     this.session = null;
+    this.shownTime = NaN;
   }
 }
