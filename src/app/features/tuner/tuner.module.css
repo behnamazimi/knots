@@ -1,5 +1,6 @@
 .tuner {
   position: fixed;
+  z-index: 5;
   top: 68px;
   right: 16px;
   width: min(260px, calc(100% - 32px));

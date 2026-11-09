@@ -36,7 +36,8 @@ test.describe("without JavaScript", () => {
     await expect(page.getByRole("button", { name: /^Step 7:/ })).toBeAttached();
     await expect(page.locator('img[src="/og/zeppelin.jpg"]').first()).toBeVisible();
     // At least the first few knots; an exact count would break every time a knot is added.
-    await expect.poll(() => page.locator("dialog a").count()).toBeGreaterThan(4);
+    await expect(page.getByRole("heading", { name: "How to tie it" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Square knot" }).first()).toBeAttached();
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       "content",
       /\/og\/zeppelin\.jpg$/,
@@ -62,22 +63,23 @@ test("loading does not shift the layout", async ({ page }) => {
   await page.goto("/knots/bowline/");
   await expect(page.locator("canvas")).toBeVisible();
   await page.waitForTimeout(1500);
-  expect(await page.evaluate(() => (window as unknown as Win).cls)).toBe(0);
+  // Not exactly 0: the web font swapping in can nudge a line of text by a hair.
+  expect(await page.evaluate(() => (window as unknown as Win).cls)).toBeLessThan(0.001);
 });
 
-test("the picker switches knots without a reload, and history works", async ({ page }) => {
+test("related links switch knots without a reload, and history works", async ({ page }) => {
   const errors = collectErrors(page);
   await page.goto("/knots/overhand/");
   await page.evaluate(() => ((window as unknown as Win).marker = 1));
-  await page.getByRole("button", { name: "All knots" }).click();
-  await page.getByRole("link", { name: /Bowline/ }).click();
+  await page.getByRole("link", { name: "Figure-eight knot" }).first().click();
+  await page.getByRole("link", { name: "Bowline" }).first().click();
   await expect(page).toHaveURL(/\/knots\/bowline\/$/);
   await expect(page.getByRole("heading", { name: "Bowline" })).toBeVisible();
   await expect(page).toHaveTitle(/Bowline/);
   expect(await page.evaluate(() => (window as unknown as Win).marker)).toBe(1);
 
   await page.goBack();
-  await expect(page.getByRole("heading", { name: "Overhand knot" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Figure-eight knot" })).toBeVisible();
   expect(errors).toEqual([]);
 });
 
@@ -86,13 +88,22 @@ test("reset view returns the camera after a drag", async ({ page }) => {
   const reset = page.getByRole("button", { name: "Reset view" });
   await expect(reset).toBeDisabled();
   const box = (await page.locator("canvas").boundingBox())!;
-  await page.mouse.move(box.width / 2, box.height / 2);
+  const [cx, cy] = [box.x + box.width / 2, box.y + box.height / 2];
+  await page.mouse.move(cx, cy);
   await page.mouse.down();
-  await page.mouse.move(box.width / 2 + 160, box.height / 2 - 60, { steps: 4 });
+  await page.mouse.move(cx + 160, cy - 60, { steps: 4 });
   await page.mouse.up();
   await expect(reset).toBeEnabled();
   await reset.click();
   await expect(reset).toBeDisabled();
+});
+
+test("the home page filters the cards by job", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("link", { name: /Zeppelin bend/ })).toBeVisible();
+  await page.getByRole("button", { name: "Tie to a post" }).click();
+  await expect(page.getByRole("link", { name: /Clove hitch/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Zeppelin bend/ })).toBeHidden();
 });
 
 test("old ?knot= links redirect and unknown pages are a 404", async ({ page }) => {

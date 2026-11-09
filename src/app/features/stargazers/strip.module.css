@@ -1,0 +1,83 @@
+.section {
+  margin-top: clamp(64px, 10vw, 120px);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px 24px;
+  margin-bottom: 8px;
+}
+
+.head p {
+  margin: 0;
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  letter-spacing: -0.02em;
+}
+
+.head span {
+  color: var(--muted);
+}
+
+.head .cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.cta :global(.icon) {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.wrap {
+  position: relative;
+  height: 150px;
+  border-radius: var(--radius);
+  background: var(--stage);
+  overflow: hidden;
+  color: #23201c;
+}
+
+.wrap canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.tip {
+  position: absolute;
+  z-index: 2;
+  padding: 7px 11px;
+  border: 1px solid rgb(35 32 28 / 0.14);
+  border-radius: 10px;
+  background: rgb(255 253 249 / 0.92);
+  font-size: 12.5px;
+  line-height: 1.35;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+}
+
+.tip strong {
+  display: block;
+  font-size: 13.5px;
+}
+
+.tip span {
+  display: block;
+  color: #6d665c;
+}

@@ -1,0 +1,17 @@
+/* The 3D view as a card: the poster, then the canvas, with the player bar along the bottom. */
+.stage {
+  position: relative;
+  border-radius: var(--radius);
+  background: var(--stage);
+  overflow: hidden;
+  color: #23201c;
+}
+
+.hint {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  font-size: 12.5px;
+  color: #6d665c;
+  pointer-events: none;
+}
