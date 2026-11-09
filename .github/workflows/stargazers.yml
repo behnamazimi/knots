@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # main only takes pull requests; a token owned by the repo admin (who may bypass the rule) can push.
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           token: ${{ secrets.PUSH_TOKEN }}
 
