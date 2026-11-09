@@ -40,7 +40,7 @@ jobs:
         run: git diff --quiet public/stargazers.json || echo "changed=true" >> "$GITHUB_OUTPUT"
 
       - if: steps.feed.outputs.changed
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 12
 
