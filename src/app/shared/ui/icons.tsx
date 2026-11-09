@@ -46,6 +46,8 @@ export const CopyIcon = icon("M9 9h10v11H9zM6 15H5V4h10v1");
 /** Six dots: something to drag. */
 export const DragIcon = icon("M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01");
 /** A chevron pointing up: fold away. */
+export const ExpandIcon = icon("M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7");
+
 export const FoldIcon = icon("M6 15l6-6 6 6");
 /** An arrow leaving a tray: share. */
 export const ShareIcon = icon("M12 15V4M8 8l4-4 4 4M5 13v6h14v-6");

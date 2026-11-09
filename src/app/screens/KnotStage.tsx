@@ -6,6 +6,7 @@ import { createKnotSession } from "../../engine/session";
 import { PlayerBar, ShareButton } from "../features/player";
 import { Tuner, type physicsFromParams } from "../features/tuner";
 import { ResetViewButton, ViewerCanvas, type StartViewer } from "../features/viewer";
+import { ExpandIcon } from "../shared/ui/icons";
 import { knotImagePath, knotPath } from "../shared/site";
 import styles from "./KnotStage.module.css";
 
@@ -15,11 +16,15 @@ export function KnotStage({
   player,
   physics,
   className,
+  wide,
+  onToggleWide,
 }: {
   knot: KnotDef;
   player: Player;
   physics: ReturnType<typeof physicsFromParams>;
   className?: string;
+  wide?: boolean;
+  onToggleWide?: () => void;
 }) {
   const [viewer, setViewer] = useState<KnotViewer | null>(null);
   const start: StartViewer = (viewer, onDrawn) => {
@@ -33,6 +38,18 @@ export function KnotStage({
     <div className={`${styles.stage} ${className ?? ""}`}>
       <ViewerCanvas poster={knotImagePath(knot.id)} start={start} onViewer={setViewer} />
       <span className={styles.hint}>Drag to turn · scroll or pinch to zoom</span>
+      {onToggleWide && (
+        <button
+          type="button"
+          className={styles.wide}
+          aria-label={wide ? "Narrow view" : "Full width"}
+          aria-pressed={wide}
+          title={wide ? "Narrow view" : "Full width"}
+          onClick={onToggleWide}
+        >
+          <ExpandIcon />
+        </button>
+      )}
       <PlayerBar
         player={player}
         steps={knot.steps}

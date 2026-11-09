@@ -1,3 +1,4 @@
+import { flushSync } from "react-dom";
 import { useState, useSyncExternalStore } from "react";
 import { Link, useSearchParams } from "react-router";
 import { knots } from "../../engine/knots";
@@ -27,13 +28,20 @@ function Session({
 }) {
   // Plain data, so the prerendered page shows the same first step and duration as the browser.
   const [player] = useState(() => Player.forKnot(knot));
+  const [wide, setWide] = useState(false);
+  // Morph the stage between layouts where the browser can; otherwise just switch.
+  const toggleWide = () => {
+    const swap = () => flushSync(() => setWide((w) => !w));
+    if (document.startViewTransition) document.startViewTransition(swap);
+    else swap();
+  };
   const info = KNOT_INFO[knot.id];
 
   return (
     <div className="site">
       <SiteHeader />
       <main className={styles.page}>
-        <div className={styles.cols}>
+        <div className={`${styles.cols} ${wide ? styles.wideCols : ""}`}>
           <article className={styles.article}>
             <Link className={styles.back} to="/">
               ← All knots
@@ -101,7 +109,14 @@ function Session({
               </p>
             </section>
           </article>
-          <KnotStage knot={knot} player={player} physics={physics} className={styles.stage} />
+          <KnotStage
+            knot={knot}
+            player={player}
+            physics={physics}
+            className={styles.stage}
+            wide={wide}
+            onToggleWide={toggleWide}
+          />
         </div>
       </main>
       <SiteFooter />
