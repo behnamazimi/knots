@@ -7,6 +7,7 @@ import {
   isRouteErrorResponse,
 } from "react-router";
 import { SITE_DESCRIPTION, SITE_NAME } from "./shared/site";
+import { THEME_SCRIPT } from "./shared/ui/ThemeToggle";
 import "./styles/global.css";
 import type { Route } from "./+types/root";
 
@@ -17,6 +18,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#ece7de" />
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
         <Meta />
         <Links />
       </head>
@@ -49,8 +51,10 @@ export default function App() {
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   const message = isRouteErrorResponse(error)
-    ? `${error.status} ${error.statusText}`
-    : "Something went wrong";
+    ? error.status === 404
+      ? "This page isn’t here"
+      : "This page didn’t load"
+    : "This page didn’t load";
   return (
     <main
       style={{ display: "grid", placeContent: "center", height: "100dvh", textAlign: "center" }}

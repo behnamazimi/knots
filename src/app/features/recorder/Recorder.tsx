@@ -45,7 +45,7 @@ export function Recorder() {
 
   return (
     <>
-      <canvas ref={canvas} className={styles.scene} aria-label="Rope to tie with hands" />
+      <canvas ref={canvas} className={styles.scene} aria-label="Rope you can tie with hands" />
       {recorder && state && <Panel recorder={recorder} state={state} />}
     </>
   );
@@ -154,7 +154,7 @@ function Panel({ recorder, state }: { recorder: KnotRecorder; state: RecorderSna
           </Tool>
         ) : (
           <Tool
-            label="Replay all, as the app will bake it"
+            label="Replay all, as it will look on the site"
             disabled={!idle || !state.moves}
             onClick={() => recorder.replay()}
           >
@@ -278,7 +278,9 @@ function Panel({ recorder, state }: { recorder: KnotRecorder; state: RecorderSna
                 shows where a hand still is.
               </li>
               <li>Let go opens the hand during the next move or wait.</li>
-              <li>Undo and redo step exactly. Replay shows it all as the app will bake it.</li>
+              <li>
+                Undo and redo are exact. Replay all shows the move as it will look on the site.
+              </li>
               <li>
                 Firm or Pull grip for hands that tighten. Drag the empty table to turn the view.
               </li>

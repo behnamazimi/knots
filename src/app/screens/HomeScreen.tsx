@@ -10,25 +10,11 @@ import { SiteFooter, SiteHeader } from "../shared/ui/SiteChrome";
 import { KnotStage } from "./KnotStage";
 import styles from "./HomeScreen.module.css";
 
-const NUMBERS = [
-  "No",
-  "One",
-  "Two",
-  "Three",
-  "Four",
-  "Five",
-  "Six",
-  "Seven",
-  "Eight",
-  "Nine",
-  "Ten",
-];
 const first = knots[0];
 
 /** The front page: a live knot to watch, then every knot by the job it does, then the stargazer rope. */
 export function HomeScreen() {
   const [player] = useState(() => Player.forKnot(first));
-  const count = NUMBERS[knots.length] ?? String(knots.length);
   return (
     <div className="site">
       <SiteHeader />
@@ -36,15 +22,15 @@ export function HomeScreen() {
         <section className={styles.hero} aria-label="A knot being tied">
           <div className={styles.text}>
             <h1>
-              {count} knots, tied slowly enough to follow.
+              Knots, tied slowly enough to follow.
               <span>
-                Each one is tied on a simulated rope you can turn, pause and scrub, one step at a
-                time.
+                Watch each knot tie itself on a simulated rope. Turn it, pause it, drag through the
+                steps.
               </span>
             </h1>
             <p className={styles.honest}>
-              This is not a video. Invisible hands pull a few points of a simulated rope, and
-              physics does the rest. Drag it to look around.
+              Not a video. Invisible hands pull a few points of the rope and physics does the rest.
+              Drag to look around.
             </p>
             <Link className={styles.go} to={knotPath(first.id)}>
               How to tie the {first.name.toLowerCase()} <span aria-hidden="true">→</span>

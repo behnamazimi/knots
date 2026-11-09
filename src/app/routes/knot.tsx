@@ -8,7 +8,7 @@ const findKnot = (id: string | undefined) => knots.find((k) => k.id === id);
 
 export const meta: Route.MetaFunction = ({ params }) => {
   const knot = findKnot(params.id);
-  return knot ? knotMeta(knot) : [{ title: "Knot not found" }];
+  return knot ? knotMeta(knot) : [{ title: "Not found · Knots Made Easy" }];
 };
 
 export default function KnotRoute({ params }: Route.ComponentProps) {

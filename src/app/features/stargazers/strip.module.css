@@ -24,18 +24,19 @@
 .head .cta {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border-radius: 10px;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
   background: var(--ink);
   color: var(--paper);
   font-weight: 650;
+  font-size: 14px;
   font-variant-numeric: tabular-nums;
 }
 
 .cta :global(.icon) {
-  width: 18px;
-  height: 18px;
+  width: 15px;
+  height: 15px;
   fill: currentColor;
 }
 

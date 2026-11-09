@@ -25,8 +25,8 @@ body {
   margin: 0;
 }
 
-/* The content pages (home, a knot) scroll like a normal site and follow the system's light or dark
-   theme; the recorder and the stargazer rope are full-screen canvases that keep the root tokens. */
+/* The content pages (home, a knot) scroll like a normal site and switch between light and dark
+   with the header toggle; the recorder and the stargazer rope are full-screen canvases that keep the root tokens. */
 .site {
   --ink: #1c2028;
   --muted: #5b6270;
@@ -43,15 +43,14 @@ body {
   line-height: 1.5;
 }
 
-@media (prefers-color-scheme: dark) {
-  .site {
-    --ink: #eceef2;
-    --muted: #9ba2ae;
-    --paper: #14171c;
-    --line: rgb(236 238 242 / 0.14);
-    --accent: #8fb0ee;
-    color-scheme: dark;
-  }
+/* Light by default; data-theme="dark" is set before paint by the script in root.tsx. */
+:root[data-theme="dark"] .site {
+  --ink: #eceef2;
+  --muted: #9ba2ae;
+  --paper: #14171c;
+  --line: rgb(236 238 242 / 0.14);
+  --accent: #8fb0ee;
+  color-scheme: dark;
 }
 
 .site a {

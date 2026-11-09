@@ -10,7 +10,7 @@ export function NotFound() {
     <main className={styles.page}>
       <h1>This knot isn’t here</h1>
       <p>
-        Try the <Link to={knotPath(knots[0].id)}>{knots[0].name.toLowerCase()}</Link> instead.
+        Start with the <Link to={knotPath(knots[0].id)}>{knots[0].name.toLowerCase()}</Link>.
       </p>
     </main>
   );
