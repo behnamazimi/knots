@@ -21,6 +21,16 @@ export function knotMeta(knot: KnotDef): MetaDescriptor[] {
     { property: "og:image:height", content: "630" },
     { property: "og:image:alt", content: `A finished ${knot.name.toLowerCase()}` },
     { name: "twitter:card", content: "summary_large_image" },
+    {
+      "script:ld+json": {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        name: `How to tie a ${knot.name.toLowerCase()}`,
+        description: knot.summary,
+        image: image,
+        step: knot.steps.map((s, i) => ({ "@type": "HowToStep", position: i + 1, name: s.title })),
+      },
+    },
   ];
 }
 
