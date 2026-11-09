@@ -16,6 +16,18 @@
   height: min(66vh, 580px);
 }
 
+.stage {
+  view-transition-name: stage;
+}
+
+/* Full width: the stage takes the whole row above the article. */
+.wideCols .stage {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  position: relative;
+  height: min(75vh, 760px);
+}
+
 .article {
   padding-top: 16px;
   max-width: 32em;
