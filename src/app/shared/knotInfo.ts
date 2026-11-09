@@ -116,7 +116,7 @@ export const KNOT_INFO: Record<string, KnotInfo> = {
     uses: [
       "Cinch a bundle or a load down tight.",
       "Fasten a rope around a post with a loop that tightens.",
-      "Snares and lashing.",
+      "Lash things together.",
     ],
     watch: "A noose tightens as you pull. Use it on objects, never on a person.",
     related: ["slip-knot", "clove-hitch"],

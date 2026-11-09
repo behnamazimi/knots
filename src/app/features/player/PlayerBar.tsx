@@ -80,7 +80,7 @@ export function PlayerBar({
           />
         </div>
         <span className={styles.clock}>{time.toFixed(1)}s</span>
-        <div className={styles.speed} role="radiogroup" aria-label="Speed">
+        <div className={styles.speed} role="radiogroup" aria-label="Playback speed">
           {SPEEDS.map(({ value, label }) => (
             <label key={value}>
               <input
@@ -97,7 +97,7 @@ export function PlayerBar({
         <button
           type="button"
           className={styles.loop}
-          aria-label="Loop"
+          aria-label="Loop playback"
           aria-pressed={s.loop}
           onClick={player.toggleLoop}
         >

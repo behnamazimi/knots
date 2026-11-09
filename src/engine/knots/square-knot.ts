@@ -38,7 +38,7 @@ export const squareKnot: KnotDef = {
   ],
   duration: 13.9,
   steps: [
-    { t: 0, title: "Fold tan's end back into a C" },
+    { t: 0, title: "Fold the tan end back into a C" },
     { t: 2.6, title: "Blue end: in under the C's curve and out over its near leg" },
     { t: 5.2, title: "Blue end: under both legs of the C" },
     { t: 7.3, title: "Blue end: back over the far leg and down through the C" },

@@ -24,13 +24,13 @@ export function HomeScreen() {
             <h1>
               Knots, tied slowly enough to follow.
               <span>
-                Each one is tied on a simulated rope you can turn, pause and scrub, one step at a
-                time.
+                Watch each knot tie itself on a simulated rope. Turn it, pause it, drag through the
+                steps.
               </span>
             </h1>
             <p className={styles.honest}>
-              This is not a video. Invisible hands pull a few points of a simulated rope, and
-              physics does the rest. Drag it to look around.
+              Not a video. Invisible hands pull a few points of the rope and physics does the rest.
+              Drag to look around.
             </p>
             <Link className={styles.go} to={knotPath(first.id)}>
               How to tie the {first.name.toLowerCase()} <span aria-hidden="true">→</span>

@@ -18,7 +18,12 @@ function toggle() {
 /** The sun and moon trade places: one sinks below the horizon while the other rises. Pure CSS off `html[data-theme]`. */
 export function ThemeToggle() {
   return (
-    <button type="button" className={styles.toggle} onClick={toggle} aria-label="Switch theme">
+    <button
+      type="button"
+      className={styles.toggle}
+      onClick={toggle}
+      aria-label="Switch between light and dark theme"
+    >
       <Sun className={styles.sun} size={18} aria-hidden />
       <Moon className={styles.moon} size={18} aria-hidden />
     </button>

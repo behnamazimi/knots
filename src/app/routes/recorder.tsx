@@ -2,7 +2,7 @@ import { Recorder } from "../features/recorder";
 import { SITE_NAME } from "../shared/site";
 
 export const meta = () => [
-  { title: `Knot recorder · ${SITE_NAME}` },
+  { title: `Knot playground · ${SITE_NAME}` },
   { name: "robots", content: "noindex" },
 ];
 

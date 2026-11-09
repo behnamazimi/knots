@@ -54,7 +54,7 @@ function Session({
               ))}
             </dl>
             <section className={styles.section}>
-              <h2>What it is for</h2>
+              <h2>What it’s for</h2>
               <ul className={`${styles.list} ${styles.uses}`}>
                 {info.uses.map((u) => (
                   <li key={u}>{u}</li>

@@ -33,9 +33,9 @@ export function SiteFooter() {
         <a className={styles.u} href="https://x.com/bazc78" target="_blank" rel="noopener">
           @bazc78
         </a>{" "}
-        and contributors. I add knots one at a time. If you want one,{" "}
+        and contributors. Want a knot added?{" "}
         <a className={styles.u} href={`${REPO_URL}/issues`} target="_blank" rel="noopener">
-          open an issue
+          Open an issue
         </a>
         .
       </p>
@@ -51,7 +51,7 @@ export function SiteFooter() {
         </a>
       </p>
       <p>
-        © {YEAR} - {SITE_NAME}
+        © {YEAR} {SITE_NAME}
         <span className={styles.gap} aria-hidden="true">
           ·
         </span>
