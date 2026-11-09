@@ -1,0 +1,76 @@
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: center;
+  margin: 8px 0 clamp(36px, 6vw, 72px);
+}
+
+.text {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+  align-content: center;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2.2rem, 4.6vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+.hero h1 span {
+  display: block;
+  max-width: 26em;
+  margin-top: 16px;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.honest {
+  margin: 0;
+  max-width: 30em;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.go {
+  justify-self: start;
+  font-weight: 650;
+  color: var(--accent);
+}
+
+.go span {
+  display: inline-block;
+  transition: transform 200ms;
+}
+
+.go:hover span {
+  transform: translateX(4px);
+}
+
+.stage {
+  height: clamp(340px, 58vh, 560px);
+}
+
+@media (max-width: 800px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stage {
+    height: 52vh;
+    min-height: 320px;
+  }
+}

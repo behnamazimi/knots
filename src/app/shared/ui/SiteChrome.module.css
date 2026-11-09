@@ -1,0 +1,55 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-block: 22px;
+  font-size: 14px;
+}
+
+.mark {
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.nav {
+  display: flex;
+  gap: 22px;
+  color: var(--muted);
+}
+
+.nav a:hover {
+  color: var(--ink);
+}
+
+.footer {
+  max-width: 1200px;
+  margin: 28px auto 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.footer p {
+  margin: 0;
+}
+
+.maker {
+  max-width: 36em;
+  margin-bottom: 10px !important;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.u {
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 150ms;
+}
+
+.u:hover {
+  text-decoration-color: var(--accent);
+}

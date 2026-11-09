@@ -1,1 +1,1 @@
-export { KnotPicker } from "./KnotPicker";
+export { KnotGrid } from "./KnotGrid";

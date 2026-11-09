@@ -1,6 +1,6 @@
 import type { MetaDescriptor } from "react-router";
 import type { KnotDef } from "../../engine/knots/types";
-import { SITE_NAME, absoluteUrl, knotImagePath, knotPath } from "./site";
+import { SITE_DESCRIPTION, SITE_NAME, absoluteUrl, knotImagePath, knotPath } from "./site";
 
 /** Title, description, canonical link and share preview (Open Graph, Twitter) for a knot's page. */
 export function knotMeta(knot: KnotDef): MetaDescriptor[] {
@@ -22,4 +22,18 @@ export function knotMeta(knot: KnotDef): MetaDescriptor[] {
     { property: "og:image:alt", content: `A finished ${knot.name.toLowerCase()}` },
     { name: "twitter:card", content: "summary_large_image" },
   ];
+}
+
+/** The front page: the site's own title and description, with the first knot's picture. */
+export function homeMeta(first: KnotDef): MetaDescriptor[] {
+  return knotMeta(first).map((d) => {
+    if ("title" in d) return { title: SITE_NAME };
+    if ("name" in d && d.name === "description") return { ...d, content: SITE_DESCRIPTION };
+    if ("property" in d && d.property === "og:title") return { ...d, content: SITE_NAME };
+    if ("property" in d && d.property === "og:description")
+      return { ...d, content: SITE_DESCRIPTION };
+    if ("property" in d && d.property === "og:url") return { ...d, content: absoluteUrl("/") };
+    if ("rel" in d) return { ...d, href: absoluteUrl("/") };
+    return d;
+  });
 }

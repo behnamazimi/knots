@@ -1,22 +1,28 @@
+/* Sits on the stage, which is the same light "table" in light and dark themes. */
 .player {
-  position: fixed;
-  left: 50%;
-  bottom: 40px;
-  transform: translateX(-50%);
-  width: min(760px, calc(100% - 32px));
-  padding: 14px 16px 12px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--panel);
-  backdrop-filter: var(--glass);
-  box-shadow: var(--shadow);
+  --ink: #23201c;
+  --muted: #6d665c;
+  --paper: #f8f7f4;
+  --line: rgb(35 32 28 / 0.14);
+  --accent: #2f5fb3;
+  --accent-soft: rgb(47 95 179 / 0.16);
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 12px;
+  padding: 10px 12px 8px;
+  border: 1px solid rgb(35 32 28 / 0.12);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 13px;
 }
 
 .step {
   display: flex;
   gap: 10px;
   align-items: baseline;
-  margin: 0 0 10px;
+  margin: 0 0 4px;
   min-height: 1.4em;
   font-weight: 550;
   line-height: 1.4;
@@ -39,11 +45,11 @@
   flex: none;
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border: 0;
   border-radius: 50%;
-  background: var(--ink);
+  background: var(--accent);
   color: var(--paper);
   transition: transform 120ms ease;
 }
@@ -187,19 +193,15 @@
   color: var(--accent);
 }
 
+/* On a phone the stage is short: the speed and clock make way so the bar stays on one row. */
 @media (max-width: 560px) {
   .bar {
-    flex-wrap: wrap;
-    gap: 10px 6px;
+    gap: 6px;
   }
 
-  .track {
-    flex-basis: calc(100% - 54px);
-  }
-
+  .speed,
   .clock {
-    margin-right: auto;
-    text-align: left;
+    display: none;
   }
 }
 
@@ -231,15 +233,4 @@
   font-size: 13px;
   white-space: nowrap;
   pointer-events: none;
-}
-
-/* On the narrowest phones the timecode makes way, so the buttons stay on one row. */
-@media (max-width: 350px) {
-  .clock {
-    display: none;
-  }
-
-  .speed {
-    margin-right: auto;
-  }
 }
