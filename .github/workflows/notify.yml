@@ -1,5 +1,5 @@
-# Tells the DevOps Telegram chat how main and production are doing: every failure, every deploy,
-# and CI turning green again. Pull request runs are left out: the author already sees them.
+# Tells the DevOps Telegram chat how main and production are doing: every failure and every pass
+# of CI and of the production deploy. Pull request runs are left out: the author already sees them.
 # Needs repository secrets TELEGRAM_OPS_BOT_TOKEN and TELEGRAM_OPS_CHAT_ID (the same bot as lobyas).
 name: Notify
 
@@ -27,9 +27,7 @@ jobs:
           RUN_ID: ${{ github.event.workflow_run.id }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
           WORKFLOW: ${{ github.event.workflow_run.name }}
-          WORKFLOW_ID: ${{ github.event.workflow_run.workflow_id }}
           CONCLUSION: ${{ github.event.workflow_run.conclusion }}
-          RUN_CREATED_AT: ${{ github.event.workflow_run.created_at }}
           SHA: ${{ github.event.workflow_run.head_sha }}
           COMMIT_TITLE: ${{ github.event.workflow_run.head_commit.message }}
         run: |
@@ -43,16 +41,7 @@ jobs:
           elif [ "$WORKFLOW" = "Deploy" ]; then
             text="🚀 Production deployed"$'\n'"${detail}"$'\n'"${RUN_URL}"
           else
-            # CI passed: only worth a message if the run before it on main failed.
-            previous="$(gh run list --repo "$GITHUB_REPOSITORY" --workflow "$WORKFLOW_ID" \
-              --branch main --event push --status completed --limit 5 \
-              --json conclusion,createdAt \
-              --jq "[.[] | select(.createdAt < \"${RUN_CREATED_AT}\")][0].conclusion // \"\"")"
-            if [ "$previous" = "failure" ]; then
-              text="✅ ${WORKFLOW} is green again on main"$'\n'"${detail}"$'\n'"${RUN_URL}"
-            else
-              text=""
-            fi
+            text="✅ ${WORKFLOW} passed"$'\n'"${detail}"$'\n'"${RUN_URL}"
           fi
 
           {
