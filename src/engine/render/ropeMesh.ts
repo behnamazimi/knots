@@ -365,10 +365,11 @@ export class RopeMesh extends THREE.Mesh<THREE.BufferGeometry, THREE.Material> {
         const angle = (2 * Math.PI * lengths[k]) / pitch + phase;
         const cos = Math.cos(angle);
         const sin = Math.sin(angle);
+        const shape = this.endShape(k);
         for (let c = 0; c < 3; c++) {
           const o = cos * frames[k * 6 + c] + sin * frames[k * 6 + 3 + c];
           outward[k * 3 + c] = o;
-          axis[k * 3 + c] = centers[k * 3 + c] + o * d * this.endShape(k)[0];
+          axis[k * 3 + c] = centers[k * 3 + c] + o * d * shape;
         }
       }
 
@@ -385,7 +386,7 @@ export class RopeMesh extends THREE.Mesh<THREE.BufferGeometry, THREE.Material> {
         sb.crossVectors(st, sn);
         center.fromArray(axis, kk * 3);
 
-        let ringR = this.endShape(kk)[1];
+        let ringR = this.endShape(kk);
         let tilt = 0;
         let along = lengths[kk];
         if (k < 0 || k >= m) {
@@ -522,32 +523,33 @@ export class RopeMesh extends THREE.Mesh<THREE.BufferGeometry, THREE.Material> {
    * How far the strands sit from the rope axis, and how big they are, near the ends: squeezed
    * under the sleeve.
    */
-  private endShape(k: number): [number, number] {
+  private endShape(k: number): number {
     const r = this.radius;
     const s = Math.min(k, this.m - 1 - k) * this.ds; // from the nearer cut end
-    const ease = (a: number, b: number, x: number) => Math.min(1, Math.max(0, (x - a) / (b - a)));
     // 1 inside the sleeve, easing to 0 a little past each lip.
     // Squeezed from the cut tip through the sleeve, easing back to full size past its inner lip.
-    const held = 1 - ease((TIP + SLEEVE) * r, (TIP + SLEEVE + 0.4) * r, s);
-    const squeeze = 1 - (1 - SQUEEZE) * held;
-    return [squeeze, squeeze];
+    const start = (TIP + SLEEVE) * r;
+    const end = (TIP + SLEEVE + 0.4) * r;
+    const ease = Math.min(1, Math.max(0, (s - start) / (end - start)));
+    return 1 - (1 - SQUEEZE) * (1 - ease);
   }
 
   /** For each particle, the nearby particles of other rope, and how pressed into the knot it is. */
   private findContacts(p: Float32Array): void {
     const { n, nearCount, contact, radius } = this;
     const reach = 3.2 * radius;
+    const reach2 = reach * reach;
     const skip = 4; // neighbours along the rope always touch; they are not contact
     nearCount.fill(0);
     contact.fill(0);
     for (let i = 0; i < n; i++)
       for (let j = i + skip; j < n; j++) {
-        const d = Math.hypot(
-          p[i * 3] - p[j * 3],
-          p[i * 3 + 1] - p[j * 3 + 1],
-          p[i * 3 + 2] - p[j * 3 + 2],
-        );
-        if (d > reach) continue;
+        const dx = p[i * 3] - p[j * 3];
+        const dy = p[i * 3 + 1] - p[j * 3 + 1];
+        const dz = p[i * 3 + 2] - p[j * 3 + 2];
+        const d2 = dx * dx + dy * dy + dz * dz;
+        if (d2 > reach2) continue;
+        const d = Math.sqrt(d2);
         const press = Math.min(1, (reach - d) / (reach - 2 * radius));
         contact[i] = Math.min(1, contact[i] + 0.5 * press);
         contact[j] = Math.min(1, contact[j] + 0.5 * press);
@@ -591,7 +593,7 @@ export class RopeMesh extends THREE.Mesh<THREE.BufferGeometry, THREE.Material> {
       const dx = p[j] - x;
       const dy = p[j + 1] - y;
       const dz = p[j + 2] - z;
-      const d = Math.hypot(dx, dy, dz) || 1;
+      const d = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1;
       const facing = (dx * nrm.x + dy * nrm.y + dz * nrm.z) / d;
       if (facing <= 0) continue;
       const u = Math.min(1, Math.max(0, (d - radius) / (1.5 * radius)));
@@ -671,7 +673,12 @@ export class RopeMesh extends THREE.Mesh<THREE.BufferGeometry, THREE.Material> {
           ? 0
           : m - 1
         : Math.min(Math.max((Math.floor(v / ringSize) % this.rings) - CAP, 0), m - 1);
-      const [base, lean, curl, side, rise] = hairShape.subarray(h * 5, h * 5 + 5);
+      const hs = h * 5;
+      const base = hairShape[hs];
+      const lean = hairShape[hs + 1];
+      const curl = hairShape[hs + 2];
+      const side = hairShape[hs + 3];
+      const rise = hairShape[hs + 4];
       // Rope that rubs in the knot is a little fuzzier.
       const len = base * (0.9 + 0.3 * contact[Math.min(Math.round(k / SUB), n - 1)]);
       let px: number;
@@ -687,11 +694,17 @@ export class RopeMesh extends THREE.Mesh<THREE.BufferGeometry, THREE.Material> {
         const o = disc * perDisc;
         const j = Math.floor(a);
         const f = a - j;
-        const rim = (c: number) =>
-          face.getComponent(o + 1 + j, c) * (1 - f) + face.getComponent(o + 2 + j, c) * f;
-        px = face.getX(o) + (rim(0) - face.getX(o)) * rho;
-        py = face.getY(o) + (rim(1) - face.getY(o)) * rho;
-        pz = face.getZ(o) + (rim(2) - face.getZ(o)) * rho;
+        const rimA = o + 1 + j;
+        const rimB = rimA + 1;
+        const cx = face.getX(o);
+        const cy = face.getY(o);
+        const cz = face.getZ(o);
+        const rx = face.getX(rimA) * (1 - f) + face.getX(rimB) * f;
+        const ry = face.getY(rimA) * (1 - f) + face.getY(rimB) * f;
+        const rz = face.getZ(rimA) * (1 - f) + face.getZ(rimB) * f;
+        px = cx + (rx - cx) * rho;
+        py = cy + (ry - cy) * rho;
+        pz = cz + (rz - cz) * rho;
         nx = faceNrm.getX(o);
         ny = faceNrm.getY(o);
         nz = faceNrm.getZ(o);
@@ -729,10 +742,19 @@ export class RopeMesh extends THREE.Mesh<THREE.BufferGeometry, THREE.Material> {
         mz + (nz * rise * (1 - Math.abs(curl)) + tz * (lean + curl) + bz * side) * len * 0.5;
       // The root starts just under the surface, so the fibre grows out of the strand.
       const sink = 0.25 * len;
-      out.set(
-        [px - nx * sink, py - ny * sink, pz - nz * sink, mx, my, mz, mx, my, mz, ex, ey, ez],
-        h * 12,
-      );
+      const o = h * 12;
+      out[o] = px - nx * sink;
+      out[o + 1] = py - ny * sink;
+      out[o + 2] = pz - nz * sink;
+      out[o + 3] = mx;
+      out[o + 4] = my;
+      out[o + 5] = mz;
+      out[o + 6] = mx;
+      out[o + 7] = my;
+      out[o + 8] = mz;
+      out[o + 9] = ex;
+      out[o + 10] = ey;
+      out[o + 11] = ez;
     }
     start.data.needsUpdate = true;
   }
