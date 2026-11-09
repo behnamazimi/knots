@@ -189,17 +189,19 @@ export class StarRope {
   /**
    * Show the first `n` stars: the rope grows knot by knot, each cinching tight, and the view
    * follows. A replay also passes how far along the rope (diameters) it has got, so the rope pays
-   * out smoothly between knots instead of a knot's gap at a time.
+   * out smoothly between knots instead of a knot's gap at a time. `now` ties them all at once,
+   * with no paying out.
    */
-  setCount(n: number, along?: number) {
+  setCount(n: number, along?: number, now = false) {
     this.payTo = along === undefined ? null : along + LEAD;
     this.dirty = true;
-    if (n === this.shown) return;
-    this.tied = Math.min(this.tied, n); // going back: those knots untie; new ones tie as the rope reaches them
-    this.follow = true;
-    this.shown = n;
-    this.relayout();
-    if (!this.laid) {
+    if (n !== this.shown) {
+      this.tied = Math.min(this.tied, n); // going back: those knots untie; new ones tie as the rope reaches them
+      this.follow = true;
+      this.shown = n;
+      this.relayout();
+    } else if (!now) return;
+    if (!this.laid || now) {
       // The first stars shown are already on the rope when the page opens: no paying out to them.
       [this.laid, this.reach, this.reachV, this.tied] = [
         true,
@@ -208,6 +210,11 @@ export class StarRope {
         n,
       ];
     }
+  }
+
+  /** Whether star `i`'s knot is on the rope now: shown, and the paying-out rope has reached it. */
+  isTied(i: number) {
+    return i < this.tied;
   }
 
   /** Glide to star `i` (it must be shown), centre it and mark it with its knot number. */
@@ -219,6 +226,11 @@ export class StarRope {
     this.follow = false;
     this.velocity = 0;
     this.target = knots[i] * this.t - this.w / 2;
+    // From far away, cut to a screen or so short of it and glide the rest: a long glide is a blur
+    // that takes seconds and loads every avatar it passes.
+    const far = this.target - this.scroll;
+    if (!CALM && Math.abs(far) > this.w * 3)
+      this.scroll = this.target - Math.sign(far) * this.w * 1.5;
   }
 
   /** The star whose avatar is under a point (canvas px), or null. */
@@ -296,7 +308,7 @@ export class StarRope {
     const lead = Math.max(max - u * u * (3 - 2 * u) * SPARE * 6.4 * this.t, min);
     if (this.target !== null) {
       const goal = Math.min(Math.max(this.target, min), max);
-      this.scroll += (goal - this.scroll) * ease(0.1, dt);
+      this.scroll = CALM ? goal : this.scroll + (goal - this.scroll) * ease(0.1, dt);
     } else if (this.follow) {
       // Carry the view along with the paying-out rope, then close what's left, so it doesn't trail.
       this.scroll += lead - this.lastLead || 0;

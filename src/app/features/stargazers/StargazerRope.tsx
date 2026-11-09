@@ -63,9 +63,9 @@ export function StargazerRope({ src, repoUrl }: { src: string; repoUrl: string }
   const last = stars.length ? Date.parse(stars[stars.length - 1].starred_at) : 0;
   const count = countAt(stars, time);
 
-  const seek = (t: number, list = stars, along?: number) => {
+  const seek = (t: number, list = stars, along?: number, now = false) => {
     setTime(t);
-    rope.current?.setCount(countAt(list, t), along);
+    rope.current?.setCount(countAt(list, t), along, now);
   };
   const stop = () => {
     cancelAnimationFrame(raf.current);
@@ -115,10 +115,14 @@ export function StargazerRope({ src, repoUrl }: { src: string; repoUrl: string }
   const matches = useMemo(() => (logins ? searchLogins(logins, query) : []), [logins, query]);
   const expanded = open && matches.length > 0;
 
-  /** Go to star `index`'s knot and mark it. */
+  /**
+   * Go to star `index`'s knot and mark it. One already on the rope is right there, so the replay
+   * just stops; one still to come is tied at once, with every knot before it, not paid out.
+   */
   const go = (index: number, list: Star[]) => {
     stop();
-    seek(Date.parse(list[list.length - 1].starred_at), list); // every knot tied, so theirs is on the rope
+    if (!rope.current?.isTied(index))
+      seek(Date.parse(list[list.length - 1].starred_at), list, undefined, true);
     rope.current?.find(index);
     setFound({ index });
   };
