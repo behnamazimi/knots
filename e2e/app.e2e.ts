@@ -102,3 +102,46 @@ test("old ?knot= links redirect and unknown pages are a 404", async ({ page }) =
   expect(response?.status()).toBe(404);
   await expect(page.getByRole("heading", { name: /isn’t here/ })).toBeVisible();
 });
+
+test("the stargazer search suggests logins as you type and goes to the one picked", async ({
+  page,
+}) => {
+  const errors = collectErrors(page);
+  // A fixed feed, so the test doesn't depend on who has starred the repo.
+  const t0 = Date.parse("2026-01-01") / 1000;
+  const s = [
+    ["octocat", 583231, 0],
+    ["behnamazimi", 1000001, 3600],
+    ["knot-tyer", 1000002, 7200],
+    ["azimuth-fan", 1000003, 60],
+  ];
+  await page.route("**/stargazers.json", (route) => route.fulfill({ json: { v: 1, t0, s } }));
+  await page.route("https://avatars.githubusercontent.com/**", (route) =>
+    route.fulfill({ status: 204 }),
+  );
+  await page.goto("/stargazers/");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("4 knots");
+
+  const search = page.getByRole("combobox", { name: /Find your knot/ });
+  await search.fill("azim");
+  await expect(search).toHaveAttribute("aria-expanded", "true");
+  // A login that starts with it first, then one with it in the middle.
+  await expect(page.getByRole("option")).toHaveText([/@azimuth-fan\s*#4/, /@behnamazimi\s*#2/]);
+  await page.getByRole("option", { name: /behnamazimi/ }).click();
+  await expect(search).toHaveAttribute("aria-expanded", "false");
+  await expect(search).toHaveValue("behnamazimi");
+  await expect(page.locator("section")).toContainText("#2@behnamazimi");
+
+  // Keyboard only: letters in order find "knot-tyer"; Enter picks the highlighted one.
+  await search.fill("@TYR");
+  await search.press("ArrowDown");
+  await expect(search).toHaveAttribute("aria-activedescendant", /.+/);
+  await search.press("Enter");
+  await expect(page.locator("section")).toContainText("#3@knot-tyer");
+
+  await search.fill("nobody-here");
+  await expect(search).toHaveAttribute("aria-expanded", "false");
+  await search.press("Enter");
+  await expect(page.getByText("Not on the rope yet")).toBeVisible();
+  expect(errors).toEqual([]);
+});

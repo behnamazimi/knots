@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import { useMountEffect } from "../../shared/hooks";
 import { knotPath } from "../../shared/site";
 import { PauseIcon, PlayIcon, SearchIcon } from "../../shared/ui/icons";
@@ -6,6 +6,14 @@ import { type Feed, decodeFeed } from "./feed";
 import { knotFor, ropeLayout } from "./layout";
 import { markPromptSeen } from "./prompt";
 import { type Star, StarRope, countAt } from "./rope";
+import {
+  type LoginIndex,
+  type LoginMatch,
+  RANK,
+  indexLogins,
+  normalize,
+  searchLogins,
+} from "./search";
 import styles from "./stargazers.module.css";
 
 /** How long the replay takes: a beat per star, so a few stars don't crawl, up to six seconds. */
@@ -33,14 +41,22 @@ export function StargazerRope({ src, repoUrl }: { src: string; repoUrl: string }
   const intro = useRef<HTMLElement>(null);
   const bar = useRef<HTMLDivElement>(null);
   const rope = useRef<StarRope>(null);
+  const form = useRef<HTMLFormElement>(null);
+  const field = useRef<HTMLInputElement>(null);
   const raf = useRef(0);
+  /** A search entered before the feed arrived, to run once it has. */
+  const asked = useRef<string | null>(null);
+  const listId = useId();
   const [stars, setStars] = useState<Star[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [time, setTime] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [hover, setHover] = useState<{ star: Star; x: number; y: number } | null>(null);
   const [onSlot, setOnSlot] = useState(false);
+  const [logins, setLogins] = useState<LoginIndex | null>(null);
   const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(-1); // the highlighted suggestion
   const [found, setFound] = useState<{ index: number } | "missing" | null>(null);
 
   const first = stars.length ? Date.parse(stars[0].starred_at) : 0;
@@ -87,6 +103,34 @@ export function StargazerRope({ src, repoUrl }: { src: string; repoUrl: string }
     raf.current = requestAnimationFrame(tick);
   };
 
+  /** Room for the suggestions between the search field and the bottom of what is visible. */
+  const fitList = () => {
+    const view = window.visualViewport;
+    const box = form.current?.getBoundingClientRect();
+    if (!view || !box) return;
+    const room = view.offsetTop + view.height - box.bottom - 16;
+    form.current!.style.setProperty("--room", `${Math.max(Math.round(room), 96)}px`);
+  };
+
+  const matches = useMemo(() => (logins ? searchLogins(logins, query) : []), [logins, query]);
+  const expanded = open && matches.length > 0;
+
+  /** Go to star `index`'s knot and mark it. */
+  const go = (index: number, list: Star[]) => {
+    stop();
+    seek(Date.parse(list[list.length - 1].starred_at), list); // every knot tied, so theirs is on the rope
+    rope.current?.find(index);
+    setFound({ index });
+  };
+  const pick = (m: LoginMatch, list = stars) => {
+    setQuery(m.login);
+    setOpen(false);
+    setActive(-1);
+    go(m.index, list);
+    // Put the on-screen keyboard away so the rope shows.
+    if (matchMedia("(pointer: coarse)").matches) field.current?.blur();
+  };
+
   useMountEffect(() => {
     markPromptSeen(); // Someone on the rope page needs no nudge toward it.
     // The rope runs the full width, below the intro panel and above the timeline bar.
@@ -96,38 +140,83 @@ export function StargazerRope({ src, repoUrl }: { src: string; repoUrl: string }
     });
     const r = new StarRope(canvas.current!, band);
     rope.current = r;
-    fetch(src)
+    // The on-screen keyboard covers the bottom of the page without resizing it: keep the
+    // suggestions above it.
+    const view = window.visualViewport;
+    view?.addEventListener("resize", fitList);
+    view?.addEventListener("scroll", fitList);
+    // Aborted on unmount, so a remount (React's dev double mount) doesn't start a second replay.
+    const abort = new AbortController();
+    fetch(src, { signal: abort.signal })
       .then((res) => res.json() as Promise<Feed>)
       .then((feed) => {
         const list = decodeFeed(feed);
+        const index = indexLogins(list.map((s) => s.user.login));
         r.setStars(list);
         setStars(list);
+        setLogins(index);
         setLoaded(true);
         if (!list.length) return;
+        const wanted = asked.current;
+        asked.current = null;
+        const hit = wanted === null ? undefined : searchLogins(index, wanted, 1)[0];
+        if (hit) return pick(hit, list); // straight to them, no replay
+        if (wanted !== null) setFound("missing");
         if (matchMedia("(prefers-reduced-motion: reduce)").matches)
           seek(Date.parse(list[list.length - 1].starred_at), list);
         else play(list);
       })
       .catch(() => {});
     return () => {
+      abort.abort();
       cancelAnimationFrame(raf.current);
       r.dispose();
+      view?.removeEventListener("resize", fitList);
+      view?.removeEventListener("scroll", fitList);
     };
   });
 
-  /** Find a stargazer by username (exact, then the first that starts with it) and go to their knot. */
+  /** Enter: the highlighted suggestion, else the best one. */
   const search = (e: React.FormEvent) => {
     e.preventDefault();
-    const name = query.trim().replace(/^@/, "").toLowerCase();
-    if (!name) return;
-    const login = (s: Star) => s.user.login.toLowerCase();
-    let index = stars.findIndex((s) => login(s) === name);
-    if (index < 0) index = stars.findIndex((s) => login(s).startsWith(name));
-    if (index < 0) return setFound("missing");
-    stop();
-    seek(last, stars); // every knot tied, so theirs is on the rope
-    rope.current?.find(index);
-    setFound({ index });
+    if (!normalize(query)) return;
+    if (!loaded) {
+      asked.current = query;
+      return;
+    }
+    const m = matches[active] ?? matches[0];
+    if (m) pick(m);
+    else {
+      setOpen(false);
+      setFound("missing");
+    }
+  };
+
+  const onKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const n = matches.length;
+    if ((e.key === "ArrowDown" || e.key === "ArrowUp") && n) {
+      e.preventDefault();
+      const down = e.key === "ArrowDown";
+      setOpen(true);
+      setActive(!expanded || active < 0 ? (down ? 0 : n - 1) : (active + (down ? 1 : -1) + n) % n);
+    } else if (e.key === "Escape" && expanded) {
+      e.preventDefault();
+      setOpen(false);
+      setActive(-1);
+    }
+  };
+
+  /** "@behn<mark>amaz</mark>imi": the part of the login that matched what was typed. */
+  const marked = (m: LoginMatch) => {
+    if (m.rank === RANK.fuzzy) return m.login;
+    const end = m.at + normalize(query).length;
+    return (
+      <>
+        {m.login.slice(0, m.at)}
+        <mark>{m.login.slice(m.at, end)}</mark>
+        {m.login.slice(end)}
+      </>
+    );
   };
 
   const point = (e: React.PointerEvent<HTMLCanvasElement>) => {
@@ -153,7 +242,7 @@ export function StargazerRope({ src, repoUrl }: { src: string; repoUrl: string }
   const prev = [...MILESTONES].reverse().find((m) => m <= count) ?? 0;
   const progress = ((count - prev) / (goal - prev)) * 100;
   // Stars in the week up to the newest one (not the clock, so the page renders the same anywhere).
-  const thisWeek = stars.filter((s) => last - Date.parse(s.starred_at) < WEEK).length;
+  const thisWeek = stars.length - countAt(stars, last - WEEK);
   const hit = found && found !== "missing" ? stars[found.index] : null;
 
   return (
@@ -221,21 +310,70 @@ export function StargazerRope({ src, repoUrl }: { src: string; repoUrl: string }
           </div>
         )}
 
-        <form className={styles.search} onSubmit={search} role="search">
+        <form ref={form} className={styles.search} onSubmit={search} role="search">
           <SearchIcon />
           <input
+            ref={field}
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
+              setOpen(true);
+              setActive(-1);
               setFound(null);
+              asked.current = null;
+              fitList();
             }}
+            onKeyDown={onKey}
+            onFocus={() => {
+              setOpen(true);
+              fitList();
+            }}
+            onBlur={() => setOpen(false)}
+            role="combobox"
+            aria-expanded={expanded}
+            aria-controls={listId}
+            aria-autocomplete="list"
+            aria-activedescendant={expanded && active >= 0 ? `${listId}-${active}` : undefined}
             placeholder="Find your knot"
             aria-label="Find your knot by GitHub username"
             autoComplete="off"
+            autoCapitalize="none"
             spellCheck={false}
             enterKeyHint="search"
           />
+          <ul
+            id={listId}
+            role="listbox"
+            aria-label="Stargazers"
+            className={styles.suggestions}
+            hidden={!expanded}
+            // Keeps focus in the field, so picking doesn't close the list first.
+            onMouseDown={(e) => e.preventDefault()}
+          >
+            {expanded &&
+              matches.map((m, k) => (
+                <li
+                  key={m.index}
+                  id={`${listId}-${k}`}
+                  role="option"
+                  aria-selected={k === active}
+                  // The list scrolls when the keyboard leaves little room; keep the highlight in it.
+                  ref={k === active ? (el) => el?.scrollIntoView({ block: "nearest" }) : undefined}
+                  onPointerMove={() => setActive(k)}
+                  onClick={() => pick(m)}
+                >
+                  <img src={avatar(stars[m.index], 48)} alt="" />
+                  <span className={styles.login}>@{marked(m)}</span>
+                  <span className={styles.number}>#{(m.index + 1).toLocaleString()}</span>
+                </li>
+              ))}
+          </ul>
         </form>
+        {!loaded && normalize(query) && (
+          <p className={styles.waiting} role="status">
+            Loading the stargazers…
+          </p>
+        )}
         {hit && found !== "missing" && found && (
           <div className={styles.badge} aria-live="polite">
             <img src={avatar(hit, 64)} alt="" />

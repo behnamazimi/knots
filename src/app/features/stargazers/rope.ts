@@ -6,11 +6,15 @@ export type Star = {
   user: { login: string; id: number; avatar_url: string; html_url: string };
 };
 
-/** How many stars were given by `time` (stars sorted by date). */
+/** How many stars were given by `time` (stars sorted by date). A binary search: it runs on every render. */
 export const countAt = (stars: readonly Star[], time: number) => {
-  let n = 0;
-  while (n < stars.length && Date.parse(stars[n].starred_at) <= time) n++;
-  return n;
+  let [lo, hi] = [0, stars.length];
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (Date.parse(stars[mid].starred_at) <= time) lo = mid + 1;
+    else hi = mid;
+  }
+  return lo;
 };
 
 /** The band the rope may use, in canvas px (below the intro panel, above the timeline bar). */

@@ -32,6 +32,8 @@
 
 .hud {
   position: fixed;
+  /* Over the timeline bar, which the suggestions can reach down to on a short screen. */
+  z-index: 1;
   top: 68px;
   left: 16px;
   width: min(300px, calc(100% - 32px));
@@ -152,6 +154,7 @@
 }
 
 .search {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -183,6 +186,75 @@
   font: inherit;
   font-size: 14px;
   color: var(--ink);
+}
+
+/* Stargazers matching what is typed so far. --room is the height left above the on-screen keyboard. */
+.suggestions {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: min(268px, var(--room, 268px));
+  margin: 0;
+  padding: 4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.suggestions li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.suggestions li[aria-selected="true"] {
+  background: var(--accent-soft);
+}
+
+.suggestions img {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #d8cfc2;
+}
+
+.suggestions mark {
+  background: none;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.login {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.number {
+  flex: none;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.waiting {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--muted);
 }
 
 /* The knot someone found: their face and their number. */
@@ -341,6 +413,11 @@
 @media (max-width: 560px) {
   .total strong {
     font-size: 32px;
+  }
+
+  /* With the keyboard up a phone shows little more than the panel: make room for suggestions. */
+  .hud:has(.search:focus-within) :is(.goal, .goalText, .faces) {
+    display: none;
   }
 
   .timeline {
