@@ -1,0 +1,1 @@
+Read [AGENTS.md](../AGENTS.md) at the repo root before changing anything: it has the architecture, the import rules enforced by oxlint, the commands, and the rules for authoring a knot. Follow it exactly.
