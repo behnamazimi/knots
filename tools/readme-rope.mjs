@@ -3,17 +3,13 @@
 // README images through a proxy that blocks outside links, so every picture is embedded.
 // The stargazers workflow renders it after each new star and commits it next to the feed.
 // Run: node tools/readme-rope.mjs                 public/stargazers.json → .github/stargazer-rope-<hash>.svg
-//      node tools/readme-rope.mjs --mock          mock stars → tools/out/stargazer-rope.svg, to review
 import { createHash } from "node:crypto";
 import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { jitter, knotFor, ropeLayout } from "../src/app/features/stargazers/layout.ts";
 import { decode } from "./stargazers.mjs";
 
-const mock = process.argv.includes("--mock");
-const [src, out] = mock
-  ? ["tools/stargazers.mock.json", "tools/out/stargazer-rope.svg"]
-  : ["public/stargazers.json", ".github/stargazer-rope.svg"];
+const [src, out] = ["public/stargazers.json", ".github/stargazer-rope.svg"];
 const root = new URL("..", import.meta.url);
 const read = (path) => readFileSync(new URL(path, root));
 
@@ -211,17 +207,14 @@ ${you}
 `;
 // GitHub caches README images by address, so each picture gets a new file name (its hash) and the
 // README links that; the old ones are deleted.
-let file = out;
-if (!mock) {
-  const version = createHash("sha1").update(svg).digest("hex").slice(0, 8);
-  file = out.replace(".svg", `-${version}.svg`);
-  for (const old of readdirSync(new URL(".github/", root)))
-    if (/^stargazer-rope.*\.svg$/.test(old)) rmSync(new URL(`.github/${old}`, root));
-  const readme = new URL("README.md", root);
-  const before = readFileSync(readme, "utf8");
-  const after = before.replace(/\.github\/stargazer-rope[\w-]*\.svg(\?v=\w+)?/g, file);
-  if (after !== before) writeFileSync(readme, after);
-}
+const version = createHash("sha1").update(svg).digest("hex").slice(0, 8);
+const file = out.replace(".svg", `-${version}.svg`);
+for (const old of readdirSync(new URL(".github/", root)))
+  if (/^stargazer-rope.*\.svg$/.test(old)) rmSync(new URL(`.github/${old}`, root));
+const readme = new URL("README.md", root);
+const before = readFileSync(readme, "utf8");
+const after = before.replace(/\.github\/stargazer-rope[\w-]*\.svg(\?v=\w+)?/g, file);
+if (after !== before) writeFileSync(readme, after);
 const path = new URL(file, root);
 mkdirSync(dirname(path.pathname), { recursive: true });
 writeFileSync(path, svg);
