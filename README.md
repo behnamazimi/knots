@@ -31,7 +31,7 @@ See how knots are tied, step by step, with a physically simulated rope.
 
 Every GitHub star ties a knot. Star the repo and your face joins the rope.
 
-[![The stargazer rope](.github/stargazer-rope-eec458d4.svg)](https://knots-made-easy.pages.dev/#stargazers)
+[![The stargazer rope](.github/stargazer-rope-d175d54a.svg)](https://knots-made-easy.pages.dev/#stargazers)
 
 ## Run it
 
