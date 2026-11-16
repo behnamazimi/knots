@@ -44,3 +44,7 @@ pnpm dev
 
 React, React Router and three.js, no physics library. [AGENTS.md](AGENTS.md) explains how it fits
 together and how to add a knot.
+
+## License
+
+[MIT](LICENSE)
