@@ -1,0 +1,77 @@
+.container {
+  padding-bottom: 80px;
+}
+
+.header {
+  padding: 16px 0 8px;
+}
+
+.title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.section {
+  margin-top: 28px;
+}
+
+.dateHeaderBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 0 0 14px;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  margin-bottom: 20px;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.dateHeaderBtn:active {
+  opacity: 0.7;
+}
+
+.dateIcon {
+  color: var(--accent);
+}
+
+.dateTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.dateCount {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.chevron {
+  color: var(--muted);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 6px;
+}
+
+.chevronCollapsed {
+  transform: rotate(-90deg);
+}

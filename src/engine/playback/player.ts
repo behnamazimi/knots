@@ -51,6 +51,8 @@ export class Player {
 
   play = () => this.set({ playing: true });
 
+  pause = () => this.set({ playing: false });
+
   seek = (time: number) => this.set({ time: Math.min(Math.max(time, 0), this.snapshot.duration) });
 
   /** Jumps to the start of the next (+1) or previous (-1) step. */

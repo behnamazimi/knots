@@ -44,13 +44,29 @@ body {
   line-height: 1.5;
 }
 
+.is-native-app footer,
+.is-native-app header nav a[href*="github.com"] {
+  display: none !important;
+}
+
+.is-native-app,
+.is-native-app .site {
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif !important;
+}
+
 /* Light by default; data-theme="dark" is set before paint by the script in root.tsx. */
+:root[data-theme="dark"],
 :root[data-theme="dark"] .site {
   --ink: #eceef2;
   --muted: #9ba2ae;
   --paper: #14171c;
+  --panel: rgb(26 30 38 / 0.95);
+  --stage: #101216;
   --line: rgb(236 238 242 / 0.14);
   --accent: #8fb0ee;
+  --accent-soft: rgb(143 176 238 / 0.2);
+  --shadow: 0 12px 32px -16px rgb(0 0 0 / 0.6);
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.2), 0 6px 18px -8px rgb(0 0 0 / 0.4);
   color-scheme: dark;
 }
 

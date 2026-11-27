@@ -46,6 +46,7 @@ const R_LOW = R_IN + Math.PI * RR;
 export const zeppelin: KnotDef = {
   id: "zeppelin",
   name: "Zeppelin bend",
+  addedDate: "2026-10-31",
   summary:
     "Joins two ropes securely. It holds under heavy load and still unties easily afterwards.",
   ropes: [

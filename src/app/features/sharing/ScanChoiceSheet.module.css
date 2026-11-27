@@ -1,0 +1,104 @@
+.clipboardBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgb(47 95 179 / 0.12);
+  border: 1px solid rgb(47 95 179 / 0.25);
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.clipboardText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.clipboardTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0;
+}
+
+.clipboardSub {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.clipboardBtn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  background: var(--accent);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: filter 0.15s;
+}
+
+.clipboardBtn:hover {
+  filter: brightness(1.1);
+}
+
+.optionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.optionBtn {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.optionBtn:hover {
+  background: var(--line);
+  border-color: var(--muted);
+}
+
+.optionIconWrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--ink);
+}
+
+.optionText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.optionTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ink);
+}
+
+.optionSub {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  margin: 0;
+}

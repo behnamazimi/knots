@@ -26,24 +26,27 @@ export function createPropMesh({ kind, a, b, radius }: Prop): THREE.Mesh {
 }
 
 /** Renderer, camera and a softly lit table for the rope to lie on. */
-export function createStage(canvas: HTMLCanvasElement) {
+export function createStage(canvas: HTMLCanvasElement, options?: { batterySaver?: boolean }) {
+  const battery = Boolean(options?.batterySaver);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(battery ? 1 : Math.min(window.devicePixelRatio, 2));
   renderer.toneMapping = THREE.NeutralToneMapping;
   renderer.toneMappingExposure = 1.15;
-  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.enabled = !battery;
   renderer.shadowMap.type = THREE.PCFShadowMap;
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(BACKGROUND);
   scene.fog = new THREE.Fog(BACKGROUND, 2.2, 4.5);
   const pmrem = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  const room = new RoomEnvironment();
+  scene.environment = pmrem.fromScene(room, 0.04).texture;
+  room.dispose();
   scene.environmentIntensity = 0.9;
 
   const key = new THREE.DirectionalLight("#fff4e8", 2.6);
   key.position.copy(KEY_LIGHT);
-  key.castShadow = true;
+  key.castShadow = !battery;
   key.shadow.mapSize.set(2048, 2048);
   key.shadow.radius = 5;
   key.shadow.intensity = 0.65; // the fill and room light reach into the shade; full-strength shadows read too heavy
@@ -110,8 +113,9 @@ export function createStage(canvas: HTMLCanvasElement) {
   // Resizing clears the canvas, so the next frame has to draw.
   let resized = true;
   const resize = () => {
-    resized = true;
     const { clientWidth: w, clientHeight: h } = canvas;
+    if (w === 0 || h === 0) return;
+    resized = true;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     // Keep the whole rope in view on narrow screens.
@@ -169,6 +173,7 @@ export function createStage(canvas: HTMLCanvasElement) {
       scene.environment?.dispose();
       pmrem.dispose();
       renderer.dispose();
+      renderer.forceContextLoss?.();
     },
   };
 }

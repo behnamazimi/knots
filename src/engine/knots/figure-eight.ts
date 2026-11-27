@@ -14,6 +14,7 @@ const tip = (m: number) => 1 - m / LENGTH;
 export const figureEight: KnotDef = {
   id: "figure-eight",
   name: "Figure-eight knot",
+  addedDate: "2026-10-30",
   summary:
     "A bulkier stopper than the overhand, and easier to untie. The extra turn is what makes the figure eight.",
   ropes: [

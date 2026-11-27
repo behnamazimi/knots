@@ -7,6 +7,7 @@ const R = 0.012;
 export const overhand: KnotDef = {
   id: "overhand",
   name: "Overhand knot",
+  addedDate: "2026-10-30",
   summary:
     "The simplest knot and the base of many others. Use it as a stopper at the end of a rope.",
   ropes: [

@@ -6,19 +6,20 @@ React + TypeScript + three.js app that animates knot tying. No physics library. 
 
 All paths below are under `src/`.
 
-| Task                                                   | Read first                                                                                           | Don't need         |
-| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- | ------------------ |
-| Add or tune a knot                                     | `engine/knots/types.ts`, `engine/knots/overhand.ts` (template), `engine/knots/index.ts`              | render, app        |
-| Rope physics (stiffness, contact, friction, guides)    | `engine/sim/rope.ts`, `engine/sim/rope.test.ts`, "Gotchas" below                                     | render, app        |
-| Ropes, props or other engine features                  | "Multi-rope layout" below, `engine/sim/rope.ts`, `engine/sim/bake.ts`, `engine/playback/timeline.ts` | ropeMesh internals |
-| How rope looks (strands, ends, shading, props, lights) | `engine/render/ropeMesh.ts`, `engine/render/ropeMaterial.ts`, `engine/render/stage.ts`               | sim, app           |
-| Camera, render loop, what is drawn                     | `engine/render/viewer.ts`, `engine/render/stage.ts`, `app/features/viewer/`                          | sim                |
-| Twist along the rope / normals                         | `engine/sim/frames.ts`                                                                               | rest of sim        |
-| Playback logic (play, seek, steps, loop, bake edge)    | `engine/playback/player.ts` + its test                                                               | sim, render        |
-| Player UI, picker, tuner                               | the feature folder in `app/features/`, `app/screens/KnotScreen.tsx`                                  | sim, render        |
-| Page titles, share previews, URLs, the domain          | `app/shared/site.ts`, `app/shared/meta.ts`, `app/routes/`                                            | engine             |
-| Knot recorder (tie a knot with the mouse, get guides)  | `engine/record/recording.ts`, `engine/render/recorder.ts`, `app/features/recorder/`                  | sim internals      |
-| Share videos of a knot (camera, captions, encoding)    | `../tools/film.ts` (camera, captions), `../tools/film.mjs` (driver), "Films" below                   | app                |
+| Task                                                   | Read first                                                                                                                              | Don't need         |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| Add or tune a knot                                     | `engine/knots/types.ts`, `engine/knots/overhand.ts` (template), `engine/knots/index.ts`                                                 | render, app        |
+| Rope physics (stiffness, contact, friction, guides)    | `engine/sim/rope.ts`, `engine/sim/rope.test.ts`, "Gotchas" below                                                                        | render, app        |
+| Ropes, props or other engine features                  | "Multi-rope layout" below, `engine/sim/rope.ts`, `engine/sim/bake.ts`, `engine/playback/timeline.ts`                                    | ropeMesh internals |
+| How rope looks (strands, ends, shading, props, lights) | `engine/render/ropeMesh.ts`, `engine/render/ropeMaterial.ts`, `engine/render/stage.ts`                                                  | sim, app           |
+| Camera, render loop, what is drawn                     | `engine/render/viewer.ts`, `engine/render/stage.ts`, `app/features/viewer/`                                                             | sim                |
+| Twist along the rope / normals                         | `engine/sim/frames.ts`                                                                                                                  | rest of sim        |
+| Playback logic (play, seek, steps, loop, bake edge)    | `engine/playback/player.ts` + its test                                                                                                  | sim, render        |
+| Player UI, picker, tuner                               | the feature folder in `app/features/`, `app/screens/KnotScreen.tsx`                                                                     | sim, render        |
+| Page titles, share previews, URLs, the domain          | `app/shared/site.ts`, `app/shared/meta.ts`, `app/routes/`                                                                               | engine             |
+| Knot recorder (tie a knot with the mouse, get guides)  | `engine/record/recording.ts`, `engine/render/recorder.ts`, `app/features/recorder/`                                                     | sim internals      |
+| Share videos of a knot (camera, captions, encoding)    | `../tools/film.ts` (camera, captions), `../tools/film.mjs` (driver), "Films" below                                                      | app                |
+| Android shell, native bridge, QR sharing, updater      | `../android/app/src/main/java/com/behnamazimi/knots/`, `app/shared/platformBridge.ts`, `app/features/sharing/`, `app/features/updater/` | sim, render        |
 
 Run `pnpm test` after anything in `engine/`. Look at UI and rendering changes in the browser (`pnpm dev`), since no unit test covers how it looks; `pnpm test:e2e` checks the built site.
 
@@ -34,13 +35,14 @@ Run `pnpm test` after anything in `engine/`. Look at UI and rendering changes in
 - `pnpm thumbs [url]` – with a dev server running, shoot every knot's finished state to `public/og/<id>.jpg` (1200×630: the share image and the picker card). Rerun after adding a knot or changing how one ends; a test fails if an image is missing.
 - `pnpm film [id… | --all]` – render knots as MP4s for sharing into `videos/` (git-ignored; real rope, scripted camera, step captions; frames drawn by `tools/film.ts`, encoded by macOS's own encoder; needs Google Chrome and macOS). `--cut=hands,cinch`, `--size=1080x1080`, `--speed`, `--hold`.
 - `pnpm baked` – serve `tools/` for the top-view debugging page (see "Checking a change with one bake")
+- `pnpm android:build` – build web assets and assemble the Android debug APK (`android/app/build/outputs/apk/debug/app-debug.apk`)
 
 All of tests, typecheck, oxlint and oxfmt must pass before committing.
 
 ## Commits and PRs
 
 - All changes go through a pull request into `main`; never push to `main` directly. Work on a branch, open a PR, and let CI pass (it runs the same checks plus a build) before merge. Don't commit or push unless the user asked you to.
-- Subject: one imperative sentence in plain English, capitalised, no period, no `feat:`/`fix:` prefix, ideally under 72 characters ("Halve the cost of rebuilding the rope mesh"). The PR number `(#14)` is added by the squash merge; don't write it yourself.
+- Subject: one imperative sentence in plain English, capitalised, no period, ideally under 72 characters. For changes targeting Android releases, Conventional Commit prefixes (`feat:`, `fix:`, `perf:`, `refactor:`, `chore:`, `docs:`) are grouped automatically into categorized release notes by `.github/workflows/android.yml` (and PR labels by `.github/release.yml`). The PR number `(#14)` is added by the squash merge; don't write it yourself.
 - Body (optional): why, not what. Say so when a bake fingerprint hash changed on purpose, and give before/after numbers for performance changes.
 - One subject per commit and per PR. Don't mix a refactor with a new knot or a physics change.
 - Never hand-edit the "Tie the latest stargazer knots" commits' output (`.github/stargazer-rope-*.svg`); a workflow produces them.
@@ -109,6 +111,18 @@ Props are static: `solveProps` pushes particles out and applies friction, once p
 ## Adding a knot
 
 Data only: write a `KnotDef` in `src/engine/knots/`, add it to `engine/knots/index.ts`, then run `pnpm thumbs` for its picture and add its hash to the bake fingerprint test. Do not add knot-specific code to the engine. Guide `at` is a fraction along its rope; the table is at y = 0, ropes rest at y = radius; the camera looks from +z. Every knot in the list is run through `src/engine/knots/knots.test.ts`, which assumes **one rope** and a knot that ties and cinches; a multi-rope knot needs its own tests.
+
+For the Android app and QR sharing:
+
+- Set `addedDate` (`"YYYY-MM-DD"`) on `KnotDef` so the knot appears under the right date in the **New** tab and receives the `✦ NEW` badge when it matches the newest date.
+- **Append** the new knot ID to the end of `CANONICAL_KNOT_IDS` in `src/engine/knots/canonical.ts`. Never reorder, insert in the middle, or remove existing IDs — bit positions must stay stable across versions for `knots://fav` QR sharing.
+
+## Releasing a new Android version
+
+- Tag and push `vX.Y.Z` (`git tag vX.Y.Z && git push origin vX.Y.Z`) from `main` to trigger `.github/workflows/android.yml`.
+- CI injects `APP_VERSION` into `vite.config.ts` / `version.ts` / `android/app/build.gradle.kts`, decodes the release keystore from `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, and `KEY_PASSWORD`, signs `app-release.apk`, and publishes the GitHub Release with categorized notes.
+- Optionally update `RELEASE_HISTORY` in `src/app/shared/changelog.ts` for offline fallback notes (live notes are fetched from GitHub Releases).
+- Do not add `REQUEST_INSTALL_PACKAGES` to `AndroidManifest.xml`; in-app updates open the GitHub Release page in the system browser.
 
 ### Choreography: think in hands, not pins
 

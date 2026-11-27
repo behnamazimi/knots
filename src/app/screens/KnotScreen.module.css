@@ -33,6 +33,10 @@
   max-width: 32em;
 }
 
+.nativeArticle {
+  max-width: 100%;
+}
+
 .back {
   display: inline-flex;
   align-items: center;
@@ -177,6 +181,10 @@
     gap: 20px;
   }
 
+  .article {
+    max-width: 100%;
+  }
+
   /* The stage stays pinned while the steps scroll under it; the paper halo hides what passes behind. */
   .stage {
     order: -1;
@@ -188,10 +196,91 @@
       0 0 0 16px var(--paper),
       var(--shadow-soft);
   }
+
+  .wideCols .stage {
+    height: calc(100dvh - 68px);
+    max-height: none;
+    min-height: 400px;
+    box-shadow: none;
+    z-index: 20;
+  }
 }
 
 @media (max-width: 560px) {
   .facts {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+.nativeAppBar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  margin: 0 calc(-1 * max(16px, env(safe-area-inset-right, 0px))) 12px
+    calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+  padding: 0 max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px));
+  backdrop-filter: var(--glass);
+}
+
+.nativeAppBarBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+  border-radius: 50%;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition:
+    opacity 0.1s ease,
+    transform 0.1s ease;
+}
+
+.nativeAppBarBtn:active {
+  background: var(--line);
+  opacity: 0.7;
+  transform: scale(0.92);
+}
+
+.nativeAppBarTitle {
+  font-size: 17px;
+  font-weight: 650;
+  color: var(--ink);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 60%;
+}
+
+.newBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 8px;
+  vertical-align: middle;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+.newBadgeStar {
+  font-size: 8.5px;
+  line-height: 1;
 }

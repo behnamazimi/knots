@@ -30,6 +30,7 @@ const T_FAR = T_RIM + Math.PI * W; // and where the far leg starts
 export const squareKnot: KnotDef = {
   id: "square-knot",
   name: "Square knot",
+  addedDate: "2026-11-01",
   summary:
     "Also called the reef knot. Ties two ends together snugly, for bundles, bandages and sail reefing; not for loads that matter.",
   ropes: [

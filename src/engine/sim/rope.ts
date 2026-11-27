@@ -125,6 +125,7 @@ export class RopeSim {
   private readonly end: Uint8Array; // per particle: 1 if last of its rope
   private readonly skips: number[]; // per rope
   private readonly boxes: Float64Array; // per block of BLOCK particles: min xyz (less a margin), max xyz
+  private readonly relScratch = new Float64Array(4);
   private readonly maxRadius: number;
   private readonly props: PropState[];
   private readonly guides: GuideState[];
@@ -272,7 +273,7 @@ export class RopeSim {
     for (let i = 0; i < n * 3; i++) v[i] = (x[i] - prev[i]) / H;
     for (let j = 0; j < n - 1; j++) {
       // ω = 2·Im(q̄prev ⊗ q) / h, taking the short way round
-      const r = relative(qPrev, j * 4, q, j * 4);
+      const r = relative(qPrev, j * 4, q, j * 4, this.relScratch);
       const sgn = r[3] < 0 ? -2 / H : 2 / H;
       om[j * 3] = r[0] * sgn;
       om[j * 3 + 1] = r[1] * sgn;
@@ -291,7 +292,7 @@ export class RopeSim {
     const { q } = this;
     const a = j * 4;
     const b = a + 4;
-    const r = relative(q, a, q, b); // Darboux vector Ω = Im(q̄a ⊗ qb) ≈ curvature·ds/2
+    const r = relative(q, a, q, b, this.relScratch); // Darboux vector Ω = Im(q̄a ⊗ qb) ≈ curvature·ds/2
     const sgn = r[3] < 0 ? -1 : 1;
     // Energy EI/2·κ²·ds with Ω = κ·ds/2 gives compliance ds / (4·EI) on Ω. Rotating either
     // segment by θ moves Ω by θ/2, so each counts as inverse mass 1 / (4·I).
@@ -316,7 +317,10 @@ export class RopeSim {
     const pa = j * 3;
     const pb = pa + 3;
     const o = j * 4;
-    const [qx, qy, qz, qw] = [q[o], q[o + 1], q[o + 2], q[o + 3]];
+    const qx = q[o];
+    const qy = q[o + 1];
+    const qz = q[o + 2];
+    const qw = q[o + 3];
     // d3: the segment's local z in the world
     const d0 = 2 * (qx * qz + qw * qy);
     const d1 = 2 * (qy * qz - qw * qx);
@@ -678,16 +682,27 @@ function same(a: Vec3, b: Vec3): boolean {
   return a[0] === b[0] && a[1] === b[1] && a[2] === b[2];
 }
 
-/** Im and Re of q̄a ⊗ qb, as [x, y, z, w]. */
-function relative(qa: Float64Array, a: number, qb: Float64Array, b: number): number[] {
-  const [ax, ay, az, aw] = [-qa[a], -qa[a + 1], -qa[a + 2], qa[a + 3]];
-  const [bx, by, bz, bw] = [qb[b], qb[b + 1], qb[b + 2], qb[b + 3]];
-  return [
-    aw * bx + bw * ax + ay * bz - az * by,
-    aw * by + bw * ay + az * bx - ax * bz,
-    aw * bz + bw * az + ax * by - ay * bx,
-    aw * bw - ax * bx - ay * by - az * bz,
-  ];
+/** Im and Re of q̄a ⊗ qb, written to `out` as [x, y, z, w]. */
+function relative(
+  qa: Float64Array,
+  a: number,
+  qb: Float64Array,
+  b: number,
+  out: Float64Array,
+): Float64Array {
+  const ax = -qa[a];
+  const ay = -qa[a + 1];
+  const az = -qa[a + 2];
+  const aw = qa[a + 3];
+  const bx = qb[b];
+  const by = qb[b + 1];
+  const bz = qb[b + 2];
+  const bw = qb[b + 3];
+  out[0] = aw * bx + bw * ax + ay * bz - az * by;
+  out[1] = aw * by + bw * ay + az * bx - ax * bz;
+  out[2] = aw * bz + bw * az + ax * by - ay * bx;
+  out[3] = aw * bw - ax * bx - ay * by - az * bz;
+  return out;
 }
 
 /** out[o] += s · q[p] ⊗ (0, v): turns q by a body-frame rotation. */
@@ -701,7 +716,10 @@ function addMul(
   vz: number,
   s: number,
 ): void {
-  const [x, y, z, w] = [q[p], q[p + 1], q[p + 2], q[p + 3]];
+  const x = q[p];
+  const y = q[p + 1];
+  const z = q[p + 2];
+  const w = q[p + 3];
   out[o] += s * (w * vx + y * vz - z * vy);
   out[o + 1] += s * (w * vy + z * vx - x * vz);
   out[o + 2] += s * (w * vz + x * vy - y * vx);

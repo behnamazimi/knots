@@ -13,6 +13,7 @@ const LIFT = 0.06; // a strand held up so the end can pass under it
 export const bowline: KnotDef = {
   id: "bowline",
   name: "Bowline",
+  addedDate: "2026-10-31",
   summary:
     "A fixed loop at the end of a rope that will not slip or jam, and unties easily after a load.",
   ropes: [
