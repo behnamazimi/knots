@@ -1,8 +1,29 @@
-# Knots Made Easy
+<div align="center">
+  <img src="android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" width="96" alt="Knots Made Easy" />
+  <h1>Knots Made Easy</h1>
+  <p>See how knots are tied, step by step, with a physically simulated 3D rope.</p>
 
-See how knots are tied, step by step, with a physically simulated rope.
+<a href="https://github.com/behnamazimi/knots/stargazers"><img src="https://img.shields.io/github/stars/behnamazimi/knots?logo=github&style=flat-square" alt="Stars"></a>
+<a href="https://github.com/behnamazimi/knots/releases"><img src="https://img.shields.io/github/v/release/behnamazimi/knots?style=flat-square" alt="Release"></a>
+<a href="https://github.com/behnamazimi/knots/releases"><img src="https://img.shields.io/github/downloads/behnamazimi/knots/total?style=flat-square" alt="Downloads"></a>
+<a href="https://github.com/behnamazimi/knots/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/behnamazimi/knots/ci.yml?branch=main&label=CI&style=flat-square" alt="CI"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License"></a>
 
-**[knots-made-easy.pages.dev](https://knots-made-easy.pages.dev)**
+  <p>
+    <a href="https://knots-made-easy.pages.dev"><strong>Web App</strong></a> ·
+    <a href="https://github.com/behnamazimi/knots/releases/latest"><strong>Android APK</strong></a> ·
+    <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/behnamazimi/knots"><strong>Get it on Obtainium</strong></a>
+  </p>
+</div>
+
+## Features
+
+- **Real-time 3D Rope Physics**: Cosserat rod XPBD simulation rendered in WebGL2 with Three.js — no canned animations or pre-baked keyframes.
+- **Interactive Step-by-Step Playback**: Scrub, pause, loop, orbit, and pinch-to-zoom around every step of tying a knot.
+- **Offline Android App**: Bundled web assets inside a native Android shell so all 9 knots work without an internet connection.
+- **Favorites & QR Sharing**: Save your go-to knots and share or import favorites via QR code.
+- **Appearance & Performance**: Light, dark, and system themes, plus High Fidelity (24 XPBD substeps) and Battery Saver (low-density rope mesh, no shadows, 1× pixel ratio) modes.
+- **In-App Update Checker**: Checks GitHub Releases for newer versions and opens the release APK in your browser (or manage updates automatically via [Obtainium](https://obtainium.imranr.dev/)).
 
 ## Knots
 
@@ -27,6 +48,75 @@ See how knots are tied, step by step, with a physically simulated rope.
   </tr>
 </table>
 
+## Android App
+
+<table>
+  <tr>
+    <th colspan="2" align="center">Home &amp; Categories (Light &amp; Dark)</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/app_home_light.png" width="250" alt="Home screen (Light)" /></td>
+    <td align="center"><img src="docs/screenshots/app_home_dark.png" width="250" alt="Home screen (Dark)" /></td>
+  </tr>
+  <tr>
+    <th colspan="2" align="center">3D Step-by-Step Viewer (Light &amp; Dark)</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/app_knot_light.png" width="250" alt="3D Knot viewer (Light)" /></td>
+    <td align="center"><img src="docs/screenshots/app_knot_dark.png" width="250" alt="3D Knot viewer (Dark)" /></td>
+  </tr>
+  <tr>
+    <th colspan="2" align="center">Settings &amp; Updates (Light &amp; Dark)</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/app_settings_light.png" width="250" alt="Settings screen (Light)" /></td>
+    <td align="center"><img src="docs/screenshots/app_settings_dark.png" width="250" alt="Settings screen (Dark)" /></td>
+  </tr>
+</table>
+
+<details>
+<summary>More screenshots (Maximized Viewer, New Tab, Favorites, Share &amp; Import)</summary>
+
+<table>
+  <tr>
+    <th colspan="2" align="center">3D Viewer — Maximized Mode (Light &amp; Dark)</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/app_knot_maximized_light.png" width="250" alt="3D Knot viewer maximized (Light)" /></td>
+    <td align="center"><img src="docs/screenshots/app_knot_maximized_dark.png" width="250" alt="3D Knot viewer maximized (Dark)" /></td>
+  </tr>
+  <tr>
+    <th colspan="2" align="center">New Knots Tab (Light &amp; Dark)</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/app_new_light.png" width="250" alt="New Knots tab (Light)" /></td>
+    <td align="center"><img src="docs/screenshots/app_new_dark.png" width="250" alt="New Knots tab (Dark)" /></td>
+  </tr>
+  <tr>
+    <th colspan="2" align="center">Favorites (Light &amp; Dark)</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/app_favorites_light.png" width="250" alt="Favorites tab (Light)" /></td>
+    <td align="center"><img src="docs/screenshots/app_favorites_dark.png" width="250" alt="Favorites tab (Dark)" /></td>
+  </tr>
+  <tr>
+    <th colspan="2" align="center">Share Favorites — QR &amp; Link (Light &amp; Dark)</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/app_share_light.png" width="250" alt="Share Favorites sheet (Light)" /></td>
+    <td align="center"><img src="docs/screenshots/app_share_dark.png" width="250" alt="Share Favorites sheet (Dark)" /></td>
+  </tr>
+  <tr>
+    <th colspan="2" align="center">Import Favorites (Light &amp; Dark)</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/app_import_light.png" width="250" alt="Import Favorites sheet (Light)" /></td>
+    <td align="center"><img src="docs/screenshots/app_import_dark.png" width="250" alt="Import Favorites sheet (Dark)" /></td>
+  </tr>
+</table>
+
+</details>
+
 ## The stargazer rope
 
 Every GitHub star ties a knot. Star the repo and your face joins the rope.
@@ -42,8 +132,13 @@ pnpm install
 pnpm dev
 ```
 
-React, React Router and three.js, no physics library. [AGENTS.md](AGENTS.md) explains how it fits
-together and how to add a knot.
+To build the Android debug APK locally:
+
+```bash
+pnpm android:build
+```
+
+React, React Router and three.js, no physics library. [AGENTS.md](AGENTS.md) explains the architecture, how to add a knot, submit fixes, and release a new Android version.
 
 ## License
 

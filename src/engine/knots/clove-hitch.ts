@@ -14,6 +14,7 @@ const SPAN = 0.4; // the supports stand at x = ±SPAN
 export const cloveHitch: KnotDef = {
   id: "clove-hitch",
   name: "Clove hitch – rope end",
+  addedDate: "2026-10-31",
   summary:
     "Ties a rope to a rail or post quickly. Easy to adjust, but it can slip when the load turns the rail.",
   ropes: [

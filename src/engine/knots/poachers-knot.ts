@@ -84,6 +84,7 @@ const W1 = CORNER + 0.03; // x where the end passes under both strands: close to
 export const poachersKnot: KnotDef = {
   id: "poachers-knot",
   name: "Poacher's knot",
+  addedDate: "2026-11-02",
   summary:
     "A double overhand noose: a loop that slides shut under load and grips hard. Good for snares and lashing.",
   ropes: [{ length: LENGTH, radius: R, start }],

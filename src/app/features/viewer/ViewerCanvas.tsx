@@ -16,22 +16,41 @@ export function ViewerCanvas({
   poster,
   start,
   onViewer,
+  batterySaver,
+  lowDensity,
 }: {
   poster: string;
   start: StartViewer;
   onViewer?: (viewer: KnotViewer | null) => void;
+  batterySaver?: boolean;
+  lowDensity?: boolean;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const [drawn, setDrawn] = useState(false);
 
   useMountEffect(() => {
-    const v = new KnotViewer(canvas.current!);
-    const stop = start(v, () => setDrawn(true));
-    onViewer?.(v);
+    let stop: (() => void) | null = null;
+    let v: KnotViewer | null = null;
+    let active = true;
+
+    // Yield to browser so KnotScreen DOM, header, and poster image paint immediately.
+    // Heavy WebGL, PMREM shader compilation, and physics run right after the first paint.
+    const timerId = setTimeout(() => {
+      if (!active || !canvas.current) return;
+      v = new KnotViewer(canvas.current, { batterySaver, lowDensity });
+      stop = start(v, () => {
+        if (active) setDrawn(true);
+      });
+      onViewer?.(v);
+    }, 40);
+
     return () => {
+      active = false;
+      clearTimeout(timerId);
       onViewer?.(null);
-      stop();
-      v.dispose();
+      v?.pauseLoop();
+      stop?.();
+      v?.dispose();
     };
   });
 

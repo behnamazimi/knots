@@ -94,6 +94,7 @@ export class StarRope {
   private dirty = true; // something changed: draw the next frame
   private last = 0;
   private frame = 0;
+  private dragTimer = 0;
   private resize = new ResizeObserver(() => this.layout());
   private listeners: [string, EventListener][] = [];
 
@@ -135,7 +136,8 @@ export class StarRope {
     this.on("pointerup", (e: PointerEvent) => {
       if (this.drag && (this.drag.moved < 5 || e.timeStamp - this.drag.at > 80)) this.velocity = 0;
       // Cleared after the click that follows, so the click can tell a swipe from a tap.
-      setTimeout(() => (this.drag = null));
+      clearTimeout(this.dragTimer);
+      this.dragTimer = window.setTimeout(() => (this.drag = null));
     });
     this.on("wheel", (e: WheelEvent) => {
       e.preventDefault();
@@ -164,8 +166,14 @@ export class StarRope {
 
   dispose() {
     cancelAnimationFrame(this.frame);
+    clearTimeout(this.dragTimer);
     this.resize.disconnect();
     for (const [type, fn] of this.listeners) this.canvas.removeEventListener(type, fn);
+    this.listeners.length = 0;
+    for (const { img } of this.faces.values()) img.onload = null;
+    this.faces.clear();
+    for (const img of [...Object.values(this.knots), this.tip]) img.onload = null;
+    this.strip = null;
   }
 
   /** Whether the press that just ended was a swipe rather than a tap. */

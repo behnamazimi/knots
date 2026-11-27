@@ -56,6 +56,7 @@ function link(
 export const daisyChain: KnotDef = {
   id: "daisy-chain",
   name: "Daisy chain",
+  addedDate: "2026-11-08",
   summary:
     "A chain of loops, each pulled through the last. Shortens a long rope for storage and comes undone with one pull once the end is freed.",
   ropes: [

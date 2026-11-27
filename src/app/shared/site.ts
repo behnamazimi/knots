@@ -9,6 +9,10 @@ export const knotPath = (id: string) => `/knots/${encodeURIComponent(id)}/`;
 /** A knot's finished-state picture: the share preview and the picker card. Made by `pnpm thumbs`. */
 export const knotImagePath = (id: string) => `/og/${encodeURIComponent(id)}.jpg`;
 export const REPO_URL = "https://github.com/behnamazimi/knots";
+export const RELEASES_URL = `${REPO_URL}/releases`;
+export const GITHUB_API_RELEASES_URL =
+  REPO_URL.replace("https://github.com/", "https://api.github.com/repos/") + "/releases";
+export const GITHUB_API_LATEST_RELEASE_URL = `${GITHUB_API_RELEASES_URL}/latest`;
 /** The stars on the stargazer rope, written by tools/stargazers.mjs. */
 export const STARGAZERS_DATA = "/stargazers.json";
 export const absoluteUrl = (path: string) => new URL(path, SITE_URL).href;

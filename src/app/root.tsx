@@ -6,25 +6,36 @@ import {
   ScrollRestoration,
   isRouteErrorResponse,
 } from "react-router";
+import { useIsNativeApp } from "./shared/appMode";
 import { SITE_DESCRIPTION, SITE_NAME } from "./shared/site";
 import { THEME_SCRIPT } from "./shared/ui/ThemeToggle";
 import "./styles/global.css";
 import type { Route } from "./+types/root";
 
+export const NATIVE_SCRIPT = `try{if(navigator.userAgent.includes("KnotsApp")||window.matchMedia("(display-mode: standalone)").matches){document.documentElement.classList.add("is-native-app")}}catch(e){}`;
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  const isNativeApp = useIsNativeApp();
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#ece7de" />
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f9f1e4" />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#14171c" />
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: NATIVE_SCRIPT }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var l=document.querySelector('link[media="print"]');if(l){l.addEventListener('load',function(){l.media='all'});}}catch(e){}`,
+          }}
+        />
         <Meta />
         <Links />
       </head>
       <body>
         {children}
-        <ScrollRestoration />
+        {!isNativeApp && <ScrollRestoration getKey={(location) => location.pathname} />}
         <Scripts />
       </body>
     </html>
@@ -37,6 +48,7 @@ export const links = () => [
   {
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..800&display=swap",
+    media: "print",
   },
 ];
 

@@ -59,6 +59,7 @@ export interface KnotDef {
   id: string;
   name: string;
   summary: string;
+  addedDate?: string;
   ropes: RopeDef[];
   props?: Prop[];
   duration: number;

@@ -1,0 +1,128 @@
+.sheet {
+  max-height: 85vh;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  padding-bottom: 8px;
+}
+
+.warningBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgb(245 158 11 / 0.12);
+  border: 1px solid rgb(245 158 11 / 0.3);
+  color: #b45309;
+}
+
+:root[data-theme="dark"] .warningBanner {
+  background: rgb(245 158 11 / 0.15);
+  border: 1px solid rgb(245 158 11 / 0.35);
+  color: #fbbf24;
+}
+
+.warningIcon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.warningText {
+  font-size: 0.875rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.knotListContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sectionTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.knotChipList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.chip {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: var(--line);
+  color: var(--ink);
+  border: 1px solid transparent;
+}
+
+.chip.unknown {
+  border-style: dashed;
+  border-color: rgb(245 158 11 / 0.6);
+  opacity: 0.85;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.primaryBtn,
+.secondaryBtn,
+.cancelBtn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.primaryBtn {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.primaryBtn:hover {
+  filter: brightness(1.1);
+}
+
+.secondaryBtn {
+  background: var(--line);
+  color: var(--ink);
+}
+
+.secondaryBtn:hover {
+  filter: brightness(0.95);
+}
+
+.cancelBtn {
+  background: none;
+  color: var(--muted);
+}
+
+.cancelBtn:hover {
+  color: var(--ink);
+}

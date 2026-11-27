@@ -16,10 +16,12 @@
     "test:e2e": "playwright test",
     "thumbs": "node tools/thumbs.mjs",
     "baked": "vite tools --port 5178",
-    "film": "node tools/film.mjs"
+    "film": "node tools/film.mjs",
+    "android:build": "pnpm build && cd android && ./gradlew assembleDebug"
   },
   "dependencies": {
     "isbot": "^5",
+    "lean-qr": "^2.7.4",
     "lucide-react": "^1.70.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",

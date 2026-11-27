@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="stage_background">#ECE7DE</color>
+    <color name="paper_background">#F6F6F3</color>
+    <color name="stage_background_dark">#121316</color>
+    <color name="ink">#1C2028</color>
+    <color name="accent_blue">#2F5FB3</color>
+    <color name="accent_orange">#B9522C</color>
+    <color name="line">#1F23201C</color>
+</resources>
+

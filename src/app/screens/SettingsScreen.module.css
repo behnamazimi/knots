@@ -1,0 +1,318 @@
+.container {
+  padding-bottom: 80px;
+}
+
+.header {
+  padding: 16px 0 12px;
+}
+
+.title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.section {
+  margin-bottom: 28px;
+}
+
+.sectionTitle {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+
+.aboutRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.aboutRowLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.aboutIconBox {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.chevron {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.option:last-child {
+  border-bottom: none;
+}
+
+.optionText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.optionLabel {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.optionDesc {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s ease;
+}
+
+.radioSelected {
+  border-color: var(--accent);
+}
+
+.radioInner {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.switch {
+  width: 44px;
+  height: 26px;
+  border-radius: 13px;
+  background: var(--line);
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.switchOn {
+  background: var(--accent);
+}
+
+.switchThumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(0);
+}
+
+.switchOn .switchThumb {
+  transform: translateX(18px);
+}
+
+.updateRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 64px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.15s ease;
+}
+
+.updateRow:active {
+  background: var(--surface);
+}
+
+.updateRowLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.updateIconBox,
+.changelogIconBox {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.successIcon {
+  color: #10b981;
+}
+
+.updateAvailableIcon {
+  color: #f59e0b;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.checkButton {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  min-width: 48px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.checkButton:hover:not(:disabled) {
+  background: var(--line);
+}
+
+.checkButton:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.checkButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.updateButton,
+.updateIconButton {
+  background: var(--accent);
+  color: #ffffff;
+  border: none;
+  min-width: 48px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.updateButton:active,
+.updateIconButton:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+
+.notesBox {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  padding: 12px 16px;
+}
+
+.notesHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.notesTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.notesChevron {
+  color: var(--muted);
+  transition: transform 0.2s ease;
+}
+
+.notesChevronOpen {
+  transform: rotate(180deg);
+}
+
+.notesContent {
+  margin-top: 12px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.releaseNoteText {
+  margin-top: 8px;
+  padding: 0 4px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.releaseLink {
+  color: var(--accent);
+  text-decoration: underline;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-weight: 500;
+}
+
+.extIcon {
+  display: inline-block;
+}

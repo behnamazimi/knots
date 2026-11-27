@@ -10,6 +10,7 @@ const R = 0.012;
 export const slipKnot: KnotDef = {
   id: "slip-knot",
   name: "Slip knot",
+  addedDate: "2026-11-08",
   summary:
     "An overhand knot tied with a bight of the short end. A temporary stopper: one pull on the short end undoes it.",
   ropes: [

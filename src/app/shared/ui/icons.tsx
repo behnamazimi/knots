@@ -47,6 +47,7 @@ export const CopyIcon = icon("M9 9h10v11H9zM6 15H5V4h10v1");
 export const DragIcon = icon("M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01");
 /** A chevron pointing up: fold away. */
 export const ExpandIcon = icon("M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7");
+export const CompressIcon = icon("M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7");
 
 export const FoldIcon = icon("M6 15l6-6 6 6");
 /** An arrow leaving a tray: share. */
@@ -63,5 +64,8 @@ export const EyeOffIcon = icon(
 export const ChevronLeftIcon = icon("M15 5l-7 7 7 7");
 export const ArrowRightIcon = icon("M5 12h14M13 6l6 6-6 6");
 export const InfoIcon = icon("M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 11v5M12 8h.01");
+export const GlobeIcon = icon(
+  "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 0c2.5 3 4 6.5 4 10s-1.5 7-4 10c-2.5-3-4-6.5-4-10s1.5-7 4-10zm-9 10h18",
+);
 export const ListIcon = icon("M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01");
 export const WarningIcon = icon("M12 4L3 20h18zM12 10v4M12 17h.01");
